@@ -1,4 +1,5 @@
 using HomeHunt.Data;
+using HomeHunt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,8 @@ namespace HomeHunt
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<ILocationService, LocationService>();
 
             var app = builder.Build();
 
