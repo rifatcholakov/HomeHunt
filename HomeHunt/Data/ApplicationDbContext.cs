@@ -30,6 +30,10 @@ namespace HomeHunt.Data
                 .WithMany(a => a.Properties)
                 .HasForeignKey(p => p.AgentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Location>().HasData(SeedData.GetLocations());
+            builder.Entity<Agent>().HasData(SeedData.GetAgents());
+            builder.Entity<Property>().HasData(SeedData.GetProperties());
         }
     }
 }
