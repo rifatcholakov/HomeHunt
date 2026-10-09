@@ -18,5 +18,24 @@ namespace HomeHunt.Controllers
             List<LocationListViewModel> locations = await _locationService.GetAllAsync();
             return View(locations);
         }
+
+        public IActionResult Create()
+        {
+            return View(new LocationFormViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(LocationFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await _locationService.CreateAsync(model);
+
+            TempData["SuccessMessage"] = "The location was created.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

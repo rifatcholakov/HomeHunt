@@ -1,4 +1,5 @@
 using HomeHunt.Data;
+using HomeHunt.Data.Models;
 using HomeHunt.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,19 @@ namespace HomeHunt.Services
                     PropertyCount = l.Properties.Count
                 })
                 .ToListAsync();
+        }
+
+        public async Task CreateAsync(LocationFormViewModel model)
+        {
+            Location location = new Location
+            {
+                City = model.City,
+                Neighborhood = model.Neighborhood,
+                PostalCode = model.PostalCode
+            };
+
+            _context.Locations.Add(location);
+            await _context.SaveChangesAsync();
         }
     }
 }
