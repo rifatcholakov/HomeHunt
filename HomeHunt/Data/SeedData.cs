@@ -25,13 +25,13 @@ namespace HomeHunt.Data
         {
             return new Agent[]
             {
-                new Agent { Id = 1, FirstName = "Ivan", LastName = "Petrov", Email = "ivan.petrov@example.com", Phone = "+359 888 100 001", AgencyName = "Sunrise Estates" },
-                new Agent { Id = 2, FirstName = "Maria", LastName = "Georgieva", Email = "maria.georgieva@example.com", Phone = "+359 888 100 002", AgencyName = "Sunrise Estates" },
-                new Agent { Id = 3, FirstName = "Georgi", LastName = "Dimitrov", Email = "georgi.dimitrov@example.com", Phone = "+359 888 100 003", AgencyName = "Balkan Homes" },
-                new Agent { Id = 4, FirstName = "Elena", LastName = "Stoyanova", Email = "elena.stoyanova@example.com", Phone = "+359 888 100 004", AgencyName = "Balkan Homes" },
-                new Agent { Id = 5, FirstName = "Nikolay", LastName = "Ivanov", Email = "nikolay.ivanov@example.com", Phone = "+359 888 100 005", AgencyName = "Black Sea Realty" },
-                new Agent { Id = 6, FirstName = "Desislava", LastName = "Koleva", Email = "desislava.koleva@example.com", Phone = "+359 888 100 006", AgencyName = "Black Sea Realty" },
-                new Agent { Id = 7, FirstName = "Stefan", LastName = "Hristov", Email = "stefan.hristov@example.com", Phone = "+359 888 100 007", AgencyName = "Rhodope Properties" }
+                new Agent { Id = 1, FirstName = "Ivan", LastName = "Petrov", Email = "ivan.petrov@example.com", Phone = "+359888100001", AgencyName = "Sunrise Estates" },
+                new Agent { Id = 2, FirstName = "Maria", LastName = "Georgieva", Email = "maria.georgieva@example.com", Phone = "+359888100002", AgencyName = "Sunrise Estates" },
+                new Agent { Id = 3, FirstName = "Georgi", LastName = "Dimitrov", Email = "georgi.dimitrov@example.com", Phone = "+359888100003", AgencyName = "Balkan Homes" },
+                new Agent { Id = 4, FirstName = "Elena", LastName = "Stoyanova", Email = "elena.stoyanova@example.com", Phone = "+359888100004", AgencyName = "Balkan Homes" },
+                new Agent { Id = 5, FirstName = "Nikolay", LastName = "Ivanov", Email = "nikolay.ivanov@example.com", Phone = "+359888100005", AgencyName = "Black Sea Realty" },
+                new Agent { Id = 6, FirstName = "Desislava", LastName = "Koleva", Email = "desislava.koleva@example.com", Phone = "+359888100006", AgencyName = "Black Sea Realty" },
+                new Agent { Id = 7, FirstName = "Stefan", LastName = "Hristov", Email = "stefan.hristov@example.com", Phone = "+359888100007", AgencyName = "Rhodope Properties" }
             };
         }
 

@@ -14,6 +14,16 @@ namespace HomeHunt.Common
             return Regex.Replace(value.Trim(), @"\s+", " ");
         }
 
+        public static string NormalizePhone(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            return Regex.Replace(value, @"\s", "");
+        }
+
         public static string Capitalize(string value)
         {
             if (string.IsNullOrEmpty(value))

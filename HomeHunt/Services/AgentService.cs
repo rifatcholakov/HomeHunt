@@ -1,4 +1,6 @@
+using HomeHunt.Common;
 using HomeHunt.Data;
+using HomeHunt.Data.Models;
 using HomeHunt.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +32,33 @@ namespace HomeHunt.Services
                     PropertyCount = a.Properties.Count
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Agents
+                .AnyAsync(a => a.Email == email);
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phone)
+        {
+            return await _context.Agents
+                .AnyAsync(a => a.Phone == phone);
+        }
+
+        public async Task CreateAsync(AgentFormViewModel model)
+        {
+            Agent agent = new Agent
+            {
+                FirstName = Helpers.Capitalize(model.FirstName),
+                LastName = Helpers.Capitalize(model.LastName),
+                Email = model.Email.ToLowerInvariant(),
+                Phone = model.Phone,
+                AgencyName = model.AgencyName
+            };
+
+            _context.Agents.Add(agent);
+            await _context.SaveChangesAsync();
         }
     }
 }

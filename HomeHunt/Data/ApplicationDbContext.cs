@@ -23,6 +23,14 @@ namespace HomeHunt.Data
                 .HasIndex(l => new { l.City, l.Neighborhood })
                 .IsUnique();
 
+            builder.Entity<Agent>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
+
+            builder.Entity<Agent>()
+                .HasIndex(a => a.Phone)
+                .IsUnique();
+
             builder.Entity<Property>()
                 .HasOne(p => p.Location)
                 .WithMany(l => l.Properties)

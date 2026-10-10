@@ -43,6 +43,7 @@ namespace HomeHunt.Common
 
             public const int EmailMaxLength = 100;
             public const int PhoneMaxLength = 20;
+            public const string PhoneRegex = @"^\+[0-9]{7,15}$";
 
             public const int AgencyNameMinLength = 2;
             public const int AgencyNameMaxLength = 80;

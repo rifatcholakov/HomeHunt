@@ -57,6 +57,12 @@ namespace HomeHunt.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
                     b.ToTable("Agents");
 
                     b.HasData(
@@ -67,7 +73,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "ivan.petrov@example.com",
                             FirstName = "Ivan",
                             LastName = "Petrov",
-                            Phone = "+359 888 100 001"
+                            Phone = "+359888100001"
                         },
                         new
                         {
@@ -76,7 +82,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "maria.georgieva@example.com",
                             FirstName = "Maria",
                             LastName = "Georgieva",
-                            Phone = "+359 888 100 002"
+                            Phone = "+359888100002"
                         },
                         new
                         {
@@ -85,7 +91,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "georgi.dimitrov@example.com",
                             FirstName = "Georgi",
                             LastName = "Dimitrov",
-                            Phone = "+359 888 100 003"
+                            Phone = "+359888100003"
                         },
                         new
                         {
@@ -94,7 +100,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "elena.stoyanova@example.com",
                             FirstName = "Elena",
                             LastName = "Stoyanova",
-                            Phone = "+359 888 100 004"
+                            Phone = "+359888100004"
                         },
                         new
                         {
@@ -103,7 +109,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "nikolay.ivanov@example.com",
                             FirstName = "Nikolay",
                             LastName = "Ivanov",
-                            Phone = "+359 888 100 005"
+                            Phone = "+359888100005"
                         },
                         new
                         {
@@ -112,7 +118,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "desislava.koleva@example.com",
                             FirstName = "Desislava",
                             LastName = "Koleva",
-                            Phone = "+359 888 100 006"
+                            Phone = "+359888100006"
                         },
                         new
                         {
@@ -121,7 +127,7 @@ namespace HomeHunt.Data.Migrations
                             Email = "stefan.hristov@example.com",
                             FirstName = "Stefan",
                             LastName = "Hristov",
-                            Phone = "+359 888 100 007"
+                            Phone = "+359888100007"
                         });
                 });
 
