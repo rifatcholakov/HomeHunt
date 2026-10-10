@@ -22,6 +22,7 @@ namespace HomeHunt
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ILocationService, LocationService>();
+            builder.Services.AddScoped<IAgentService, AgentService>();
 
             var app = builder.Build();
 
