@@ -31,6 +31,22 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
+        public async Task<LocationDetailsViewModel?> GetByIdAsync(int id)
+        {
+            return await _context.Locations
+                .AsNoTracking()
+                .Where(l => l.Id == id)
+                .Select(l => new LocationDetailsViewModel
+                {
+                    Id = l.Id,
+                    City = l.City,
+                    Neighborhood = l.Neighborhood,
+                    PostalCode = l.PostalCode,
+                    PropertyCount = l.Properties.Count
+                })
+                .FirstOrDefaultAsync();
+        }
+
         public async Task CreateAsync(LocationFormViewModel model)
         {
             Location location = new Location

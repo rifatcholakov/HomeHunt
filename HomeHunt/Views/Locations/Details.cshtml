@@ -1,0 +1,27 @@
+@model LocationDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Neighborhood + ", " + Model.City;
+}
+
+<h1 class="h2 mb-3">@Model.Neighborhood, @Model.City</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">City</dt>
+            <dd class="col-sm-9">@Model.City</dd>
+
+            <dt class="col-sm-3">Neighborhood</dt>
+            <dd class="col-sm-9">@Model.Neighborhood</dd>
+
+            <dt class="col-sm-3">Postal code</dt>
+            <dd class="col-sm-9">@Model.PostalCode</dd>
+
+            <dt class="col-sm-3">Properties</dt>
+            <dd class="col-sm-9">@Model.PropertyCount</dd>
+        </dl>
+    </div>
+</div>
+
+<a class="btn btn-outline-secondary" asp-action="Index">Back to Locations</a>

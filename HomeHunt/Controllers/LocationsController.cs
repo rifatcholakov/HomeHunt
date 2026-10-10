@@ -19,6 +19,18 @@ namespace HomeHunt.Controllers
             return View(locations);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            LocationDetailsViewModel? location = await _locationService.GetByIdAsync(id);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return View(location);
+        }
+
         public IActionResult Create()
         {
             return View(new LocationFormViewModel());

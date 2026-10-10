@@ -6,6 +6,8 @@ namespace HomeHunt.Services
     {
         Task<List<LocationListViewModel>> GetAllAsync();
 
+        Task<LocationDetailsViewModel?> GetByIdAsync(int id);
+
         Task CreateAsync(LocationFormViewModel model);
     }
 }
