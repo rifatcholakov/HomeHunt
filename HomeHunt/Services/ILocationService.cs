@@ -8,6 +8,10 @@ namespace HomeHunt.Services
 
         Task<LocationDetailsViewModel?> GetByIdAsync(int id);
 
+        Task<bool> ExistsAsync(string city, string neighborhood);
+
+        Task<string?> GetCityByPostalCodeAsync(string postalCode);
+
         Task CreateAsync(LocationFormViewModel model);
     }
 }

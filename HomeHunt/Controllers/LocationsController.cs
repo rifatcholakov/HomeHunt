@@ -44,6 +44,20 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
+            if (await _locationService.ExistsAsync(model.City, model.Neighborhood))
+            {
+                ModelState.AddModelError(nameof(model.Neighborhood), "This location already exists.");
+                return View(model);
+            }
+
+            string? cityOfPostalCode = await _locationService.GetCityByPostalCodeAsync(model.PostalCode);
+
+            if (cityOfPostalCode != null && !string.Equals(cityOfPostalCode, model.City, StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(model.PostalCode), $"This postal code belongs to {cityOfPostalCode}.");
+                return View(model);
+            }
+
             await _locationService.CreateAsync(model);
 
             TempData["SuccessMessage"] = "The location was created.";

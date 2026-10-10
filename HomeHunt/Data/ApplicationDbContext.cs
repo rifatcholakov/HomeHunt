@@ -19,6 +19,10 @@ namespace HomeHunt.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Location>()
+                .HasIndex(l => new { l.City, l.Neighborhood })
+                .IsUnique();
+
             builder.Entity<Property>()
                 .HasOne(p => p.Location)
                 .WithMany(l => l.Properties)

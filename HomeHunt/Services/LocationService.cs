@@ -1,3 +1,4 @@
+using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.ViewModels;
@@ -47,12 +48,27 @@ namespace HomeHunt.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> ExistsAsync(string city, string neighborhood)
+        {
+            return await _context.Locations
+                .AnyAsync(l => l.City == city && l.Neighborhood == neighborhood);
+        }
+
+        public async Task<string?> GetCityByPostalCodeAsync(string postalCode)
+        {
+            return await _context.Locations
+                .AsNoTracking()
+                .Where(l => l.PostalCode == postalCode)
+                .Select(l => l.City)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task CreateAsync(LocationFormViewModel model)
         {
             Location location = new Location
             {
-                City = model.City,
-                Neighborhood = model.Neighborhood,
+                City = Helpers.Capitalize(model.City),
+                Neighborhood = Helpers.Capitalize(model.Neighborhood),
                 PostalCode = model.PostalCode
             };
 

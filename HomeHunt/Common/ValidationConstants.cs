@@ -33,7 +33,7 @@ namespace HomeHunt.Common
             public const int NeighborhoodMinLength = 2;
             public const int NeighborhoodMaxLength = 60;
 
-            public const string PostalCodeRegex = @"^\d{4}$";
+            public const string PostalCodeRegex = @"^[0-9]{4}$";
         }
 
         public static class Agent
