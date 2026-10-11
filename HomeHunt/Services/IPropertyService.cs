@@ -6,6 +6,14 @@ namespace HomeHunt.Services
     {
         Task<List<PropertyListViewModel>> SearchAsync(PropertySearchViewModel searchModel);
 
+        Task<List<PropertyListViewModel>> GetRecentAsync(int count);
+
+        Task<int> CountAvailableAsync();
+
+        Task<int> CountAvailableForSaleAsync();
+
+        Task<int> CountAvailableForRentAsync();
+
         Task<PropertyDetailsViewModel?> GetByIdAsync(int id);
 
         Task<PropertyFormViewModel?> GetEditModelAsync(int id);

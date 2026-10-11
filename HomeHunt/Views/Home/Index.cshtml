@@ -1,8 +1,108 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="text-center py-4">
+    <h1 class="display-5">Find your next home</h1>
+    <p class="lead text-muted">Search properties for sale and for rent, and contact the agent who lists them.</p>
+</section>
+
+<form asp-controller="Properties" asp-action="Index" method="get" class="card card-body mb-5">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="City" class="form-label">City</label>
+            <select id="City" name="City" asp-items="@(new SelectList(Model.Cities))" class="form-select">
+                <option value="">All cities</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="PropertyType" class="form-label">Property type</label>
+            <select id="PropertyType" name="PropertyType" asp-items="Html.GetEnumSelectList<PropertyType>()" class="form-select">
+                <option value="">All types</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="ListingType" class="form-label">Listing type</label>
+            <select id="ListingType" name="ListingType" asp-items="Html.GetEnumSelectList<ListingType>()" class="form-select">
+                <option value="">Sale and rent</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label for="MaxPrice" class="form-label">Max price</label>
+            <input id="MaxPrice" name="MaxPrice" type="number" min="0" class="form-control" />
+        </div>
+
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </div>
+</form>
+
+<section class="mb-5">
+    <h2 class="h4 mb-3">Browse by city</h2>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        @foreach (CityCountViewModel cityCount in Model.CityCounts)
+        {
+            <div class="col">
+                <a class="card card-body text-decoration-none h-100" asp-controller="Properties" asp-action="Index" asp-route-City="@cityCount.City">
+                    <span class="fw-bold">@cityCount.City</span>
+                    <span class="text-muted">@cityCount.PropertyCount properties</span>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="h4 mb-3">Browse by type</h2>
+    @foreach (PropertyType type in Enum.GetValues<PropertyType>())
+    {
+        <a class="btn btn-outline-primary me-2 mb-2" asp-controller="Properties" asp-action="Index" asp-route-PropertyType="@type">@type</a>
+    }
+</section>
+
+<section class="mb-5">
+    <div class="row g-3 text-center">
+        <div class="col-md-4">
+            <div class="card card-body">
+                <span class="display-6">@Model.AvailableCount</span>
+                <span class="text-muted">Available properties</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-body">
+                <span class="display-6">@Model.ForSaleCount</span>
+                <span class="text-muted">Available for sale</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-body">
+                <span class="display-6">@Model.ForRentCount</span>
+                <span class="text-muted">Available for rent</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="h4 mb-3">Recently added</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (PropertyListViewModel property in Model.RecentProperties)
+        {
+            <partial name="_PropertyCard" model="property" />
+        }
+    </div>
+</section>
+
+<section class="card card-body text-center">
+    <h2 class="h4">Have a property to list?</h2>
+    <p class="text-muted">Add it to HomeHunt and it will appear in the search results.</p>
+    <div>
+        <a class="btn btn-primary" asp-controller="Properties" asp-action="Create">Add Property</a>
+    </div>
+</section>

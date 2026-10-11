@@ -1,5 +1,6 @@
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
+using HomeHunt.Data.Models.Enums;
 using HomeHunt.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -87,6 +88,48 @@ namespace HomeHunt.Services
                     ImageUrl = p.ImageUrl
                 })
                 .ToListAsync();
+        }
+
+        public async Task<List<PropertyListViewModel>> GetRecentAsync(int count)
+        {
+            return await _context.Properties
+                .AsNoTracking()
+                .OrderByDescending(p => p.CreatedOn)
+                .Take(count)
+                .Select(p => new PropertyListViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    City = p.Location.City,
+                    Neighborhood = p.Location.Neighborhood,
+                    Price = p.Price,
+                    Area = p.Area,
+                    Bedrooms = p.Bedrooms,
+                    Bathrooms = p.Bathrooms,
+                    PropertyType = p.PropertyType,
+                    ListingType = p.ListingType,
+                    Status = p.Status,
+                    ImageUrl = p.ImageUrl
+                })
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAvailableAsync()
+        {
+            return await _context.Properties
+                .CountAsync(p => p.Status == PropertyStatus.Available);
+        }
+
+        public async Task<int> CountAvailableForSaleAsync()
+        {
+            return await _context.Properties
+                .CountAsync(p => p.Status == PropertyStatus.Available && p.ListingType == ListingType.Sale);
+        }
+
+        public async Task<int> CountAvailableForRentAsync()
+        {
+            return await _context.Properties
+                .CountAsync(p => p.Status == PropertyStatus.Available && p.ListingType == ListingType.Rent);
         }
 
         public async Task CreateAsync(PropertyFormViewModel model)

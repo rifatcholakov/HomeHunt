@@ -49,6 +49,21 @@ namespace HomeHunt.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<List<CityCountViewModel>> GetCityCountsAsync()
+        {
+            return await _context.Properties
+                .AsNoTracking()
+                .GroupBy(p => p.Location.City)
+                .Select(g => new CityCountViewModel
+                {
+                    City = g.Key,
+                    PropertyCount = g.Count()
+                })
+                .OrderByDescending(c => c.PropertyCount)
+                .ThenBy(c => c.City)
+                .ToListAsync();
+        }
+
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Locations

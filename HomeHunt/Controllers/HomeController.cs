@@ -1,24 +1,38 @@
 using System.Diagnostics;
 using HomeHunt.Models;
+using HomeHunt.Services;
+using HomeHunt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHunt.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IPropertyService _propertyService;
+        private readonly ILocationService _locationService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IPropertyService propertyService, ILocationService locationService)
         {
-            _logger = logger;
+            _propertyService = propertyService;
+            _locationService = locationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            HomeViewModel model = new HomeViewModel
+            {
+                AvailableCount = await _propertyService.CountAvailableAsync(),
+                ForSaleCount = await _propertyService.CountAvailableForSaleAsync(),
+                ForRentCount = await _propertyService.CountAvailableForRentAsync(),
+                RecentProperties = await _propertyService.GetRecentAsync(3),
+                Cities = await _locationService.GetCitiesAsync(),
+                CityCounts = await _locationService.GetCityCountsAsync()
+            };
+
+            return View(model);
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
             return View();
         }
