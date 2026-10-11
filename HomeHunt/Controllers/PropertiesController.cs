@@ -120,6 +120,32 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            PropertyDetailsViewModel? property = await _propertyService.GetByIdAsync(id);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            return View(property);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            bool deleted = await _propertyService.DeleteAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The property was deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
         private async Task FillDropdownsAsync(PropertyFormViewModel model)
         {
             model.Locations = await _locationService.GetOptionsAsync();

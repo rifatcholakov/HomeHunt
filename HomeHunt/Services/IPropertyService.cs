@@ -13,5 +13,7 @@ namespace HomeHunt.Services
         Task CreateAsync(PropertyFormViewModel model);
 
         Task<bool> UpdateAsync(int id, PropertyFormViewModel model);
+
+        Task<bool> DeleteAsync(int id);
     }
 }

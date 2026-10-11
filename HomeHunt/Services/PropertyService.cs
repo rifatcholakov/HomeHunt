@@ -110,6 +110,20 @@ namespace HomeHunt.Services
             return true;
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            Property? property = await _context.Properties.FindAsync(id);
+
+            if (property == null)
+            {
+                return false;
+            }
+
+            _context.Properties.Remove(property);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<PropertyDetailsViewModel?> GetByIdAsync(int id)
         {
             return await _context.Properties
