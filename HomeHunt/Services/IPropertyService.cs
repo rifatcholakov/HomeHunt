@@ -8,6 +8,10 @@ namespace HomeHunt.Services
 
         Task<PropertyDetailsViewModel?> GetByIdAsync(int id);
 
+        Task<PropertyFormViewModel?> GetEditModelAsync(int id);
+
         Task CreateAsync(PropertyFormViewModel model);
+
+        Task<bool> UpdateAsync(int id, PropertyFormViewModel model);
     }
 }

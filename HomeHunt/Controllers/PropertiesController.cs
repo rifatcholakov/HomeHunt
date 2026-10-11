@@ -71,6 +71,55 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            PropertyFormViewModel? model = await _propertyService.GetEditModelAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            await FillDropdownsAsync(model);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, PropertyFormViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (model.LocationId != null && !await _locationService.ExistsAsync(model.LocationId.Value))
+            {
+                ModelState.AddModelError(nameof(model.LocationId), "Please select a valid location.");
+            }
+
+            if (model.AgentId != null && !await _agentService.ExistsAsync(model.AgentId.Value))
+            {
+                ModelState.AddModelError(nameof(model.AgentId), "Please select a valid agent.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await FillDropdownsAsync(model);
+                return View(model);
+            }
+
+            bool updated = await _propertyService.UpdateAsync(id, model);
+
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The property was updated.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         private async Task FillDropdownsAsync(PropertyFormViewModel model)
         {
             model.Locations = await _locationService.GetOptionsAsync();
