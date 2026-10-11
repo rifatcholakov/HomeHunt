@@ -18,5 +18,17 @@ namespace HomeHunt.Controllers
             List<PropertyListViewModel> properties = await _propertyService.GetAllAsync();
             return View(properties);
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            PropertyDetailsViewModel? property = await _propertyService.GetByIdAsync(id);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            return View(property);
+        }
     }
 }

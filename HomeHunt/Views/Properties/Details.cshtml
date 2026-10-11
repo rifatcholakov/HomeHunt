@@ -1,0 +1,94 @@
+@model PropertyDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+    string defaultImage = Url.Content("~/images/default-property-image.svg");
+    string imageUrl = string.IsNullOrEmpty(Model.ImageUrl) ? defaultImage : Model.ImageUrl;
+    string pricePerSquareMeter = Model.Area > 0 ? (Model.Price / Model.Area).ToString("N2") : "-";
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <img src="@imageUrl" class="img-fluid rounded mb-3 property-details-image" alt="@Model.Title"
+             onerror="this.onerror=null; this.src='@defaultImage';" />
+
+        <div class="mb-2">
+            <span class="badge bg-secondary">@Model.PropertyType</span>
+            <span class="badge bg-info text-dark">@Model.ListingType</span>
+            <partial name="_StatusBadge" model="Model.Status" />
+        </div>
+
+        <h1 class="h2">@Model.Title</h1>
+        <p class="text-muted">@Model.Neighborhood, @Model.City</p>
+        <p class="h3 mb-4">
+            &euro;@Model.Price.ToString("N0")@(Model.ListingType == ListingType.Rent ? " / month" : "")
+        </p>
+
+        <h2 class="h5">Description</h2>
+        <p>@Model.Description</p>
+
+        <h2 class="h5">Property information</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Type</th>
+                    <td>@Model.PropertyType</td>
+                </tr>
+                <tr>
+                    <th>Listing</th>
+                    <td>@Model.ListingType</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>@Model.Status</td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td>&euro;@Model.Price.ToString("N0")</td>
+                </tr>
+                <tr>
+                    <th>Area</th>
+                    <td>@Model.Area.ToString("N0") m&sup2;</td>
+                </tr>
+                <tr>
+                    <th>Price per m&sup2;</th>
+                    <td>@pricePerSquareMeter</td>
+                </tr>
+                <tr>
+                    <th>Bedrooms</th>
+                    <td>@Model.Bedrooms</td>
+                </tr>
+                <tr>
+                    <th>Bathrooms</th>
+                    <td>@Model.Bathrooms</td>
+                </tr>
+                <tr>
+                    <th>Listed on</th>
+                    <td>@Model.CreatedOn.ToString("dd MMM yyyy")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5 card-title">Location</h2>
+                <p class="mb-2">@Model.Neighborhood, @Model.City</p>
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Locations" asp-action="Details" asp-route-id="@Model.LocationId">View location</a>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5 card-title">Agent</h2>
+                <p class="mb-1">@Model.AgentFirstName @Model.AgentLastName</p>
+                <p class="mb-1 text-muted">@Model.AgentEmail</p>
+                <p class="mb-2 text-muted">@Model.AgentPhone</p>
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Agents" asp-action="Details" asp-route-id="@Model.AgentId">View agent</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-outline-secondary" asp-action="Index">Back to Properties</a>
