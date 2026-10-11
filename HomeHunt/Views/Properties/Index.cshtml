@@ -4,7 +4,10 @@
     ViewData["Title"] = "All Properties";
 }
 
-<h1 class="h2 mb-3">All Properties</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h2 mb-0">All Properties</h1>
+    <a class="btn btn-primary" asp-action="Create">Add Property</a>
+</div>
 
 @if (Model.Count == 0)
 {

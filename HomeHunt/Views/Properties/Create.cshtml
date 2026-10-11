@@ -1,0 +1,22 @@
+@model PropertyFormViewModel
+
+@{
+    ViewData["Title"] = "Add Property";
+}
+
+<h1 class="h2 mb-3">Add Property</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form asp-action="Create" method="post">
+            <partial name="_PropertyForm" model="Model" />
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

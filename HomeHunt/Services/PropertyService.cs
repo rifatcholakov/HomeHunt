@@ -1,4 +1,5 @@
 using HomeHunt.Data;
+using HomeHunt.Data.Models;
 using HomeHunt.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,29 @@ namespace HomeHunt.Services
                     ImageUrl = p.ImageUrl
                 })
                 .ToListAsync();
+        }
+
+        public async Task CreateAsync(PropertyFormViewModel model)
+        {
+            Property property = new Property
+            {
+                Title = model.Title,
+                Description = model.Description,
+                Price = model.Price ?? 0,
+                Area = model.Area ?? 0,
+                Bedrooms = model.Bedrooms,
+                Bathrooms = model.Bathrooms,
+                PropertyType = model.PropertyType,
+                ListingType = model.ListingType,
+                Status = model.Status,
+                ImageUrl = model.ImageUrl,
+                LocationId = model.LocationId ?? 0,
+                AgentId = model.AgentId ?? 0,
+                CreatedOn = DateTime.Now
+            };
+
+            _context.Properties.Add(property);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PropertyDetailsViewModel?> GetByIdAsync(int id)

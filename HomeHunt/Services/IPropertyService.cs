@@ -7,5 +7,7 @@ namespace HomeHunt.Services
         Task<List<PropertyListViewModel>> GetAllAsync();
 
         Task<PropertyDetailsViewModel?> GetByIdAsync(int id);
+
+        Task CreateAsync(PropertyFormViewModel model);
     }
 }

@@ -1,0 +1,89 @@
+@model PropertyFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<input type="hidden" asp-for="Id" />
+
+<div class="mb-3">
+    <label asp-for="Title" class="form-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="PropertyType" class="form-label"></label>
+        <select asp-for="PropertyType" asp-items="Html.GetEnumSelectList<PropertyType>()" class="form-select"></select>
+        <span asp-validation-for="PropertyType" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="ListingType" class="form-label"></label>
+        <select asp-for="ListingType" asp-items="Html.GetEnumSelectList<ListingType>()" class="form-select"></select>
+        <span asp-validation-for="ListingType" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Area" class="form-label"></label>
+        <input asp-for="Area" class="form-control" />
+        <span asp-validation-for="Area" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Bedrooms" class="form-label"></label>
+        <input asp-for="Bedrooms" class="form-control" />
+        <span asp-validation-for="Bedrooms" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Bathrooms" class="form-label"></label>
+        <input asp-for="Bathrooms" class="form-control" />
+        <span asp-validation-for="Bathrooms" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="LocationId" class="form-label"></label>
+        <select asp-for="LocationId" asp-items="Model.Locations" class="form-select">
+            <option value="">-- Select a location --</option>
+        </select>
+        <span asp-validation-for="LocationId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="AgentId" class="form-label"></label>
+        <select asp-for="AgentId" asp-items="Model.Agents" class="form-select">
+            <option value="">-- Select an agent --</option>
+        </select>
+        <span asp-validation-for="AgentId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Status" class="form-label"></label>
+    <select asp-for="Status" asp-items="Html.GetEnumSelectList<PropertyStatus>()" class="form-select"></select>
+    <span asp-validation-for="Status" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ImageUrl" class="form-label"></label>
+    <input asp-for="ImageUrl" class="form-control" />
+    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+</div>

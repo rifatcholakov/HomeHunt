@@ -2,6 +2,7 @@ using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeHunt.Services
@@ -50,6 +51,26 @@ namespace HomeHunt.Services
                     PropertyCount = a.Properties.Count
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Agents
+                .AnyAsync(a => a.Id == id);
+        }
+
+        public async Task<List<SelectListItem>> GetOptionsAsync()
+        {
+            return await _context.Agents
+                .AsNoTracking()
+                .OrderBy(a => a.FirstName)
+                .ThenBy(a => a.LastName)
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.FirstName + " " + a.LastName
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> EmailExistsAsync(string email)
