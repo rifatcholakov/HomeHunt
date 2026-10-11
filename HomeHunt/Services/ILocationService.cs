@@ -15,6 +15,8 @@ namespace HomeHunt.Services
 
         Task<List<SelectListItem>> GetOptionsAsync();
 
+        Task<List<string>> GetCitiesAsync();
+
         Task<string?> GetCityByPostalCodeAsync(string postalCode);
 
         Task CreateAsync(LocationFormViewModel model);

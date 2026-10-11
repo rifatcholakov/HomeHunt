@@ -14,11 +14,63 @@ namespace HomeHunt.Services
             _context = context;
         }
 
-        public async Task<List<PropertyListViewModel>> GetAllAsync()
+        public async Task<List<PropertyListViewModel>> SearchAsync(PropertySearchViewModel searchModel)
         {
-            return await _context.Properties
-                .AsNoTracking()
-                .OrderByDescending(p => p.CreatedOn)
+            IQueryable<Property> query = _context.Properties.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchModel.City))
+            {
+                query = query.Where(p => p.Location.City == searchModel.City);
+            }
+
+            if (searchModel.PropertyType.HasValue)
+            {
+                query = query.Where(p => p.PropertyType == searchModel.PropertyType.Value);
+            }
+
+            if (searchModel.ListingType.HasValue)
+            {
+                query = query.Where(p => p.ListingType == searchModel.ListingType.Value);
+            }
+
+            if (searchModel.MinPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= searchModel.MinPrice.Value);
+            }
+
+            if (searchModel.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= searchModel.MaxPrice.Value);
+            }
+
+            if (searchModel.MinBedrooms.HasValue)
+            {
+                query = query.Where(p => p.Bedrooms >= searchModel.MinBedrooms.Value);
+            }
+
+            if (searchModel.MinArea.HasValue)
+            {
+                query = query.Where(p => p.Area >= searchModel.MinArea.Value);
+            }
+
+            if (searchModel.SortBy == "priceAsc")
+            {
+                query = query.OrderBy(p => p.Price);
+            }
+            else if (searchModel.SortBy == "priceDesc")
+            {
+                query = query.OrderByDescending(p => p.Price);
+            }
+            else if (searchModel.SortBy == "area")
+            {
+                query = query.OrderByDescending(p => p.Area);
+            }
+            else
+            {
+                query = query.OrderByDescending(p => p.CreatedOn);
+            }
+
+            return await query
                 .Select(p => new PropertyListViewModel
                 {
                     Id = p.Id,

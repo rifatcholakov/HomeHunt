@@ -20,10 +20,21 @@ namespace HomeHunt.Controllers
             _agentService = agentService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PropertySearchViewModel searchModel)
         {
-            List<PropertyListViewModel> properties = await _propertyService.GetAllAsync();
-            return View(properties);
+            if (searchModel.MinPrice != null && searchModel.MaxPrice != null && searchModel.MinPrice > searchModel.MaxPrice)
+            {
+                ModelState.AddModelError(nameof(searchModel.MinPrice), "Minimum price cannot be greater than maximum price.");
+            }
+
+            searchModel.Cities = await _locationService.GetCitiesAsync();
+
+            if (ModelState.IsValid)
+            {
+                searchModel.Properties = await _propertyService.SearchAsync(searchModel);
+            }
+
+            return View(searchModel);
         }
 
         public async Task<IActionResult> Details(int id)

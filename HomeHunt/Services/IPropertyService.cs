@@ -4,7 +4,7 @@ namespace HomeHunt.Services
 {
     public interface IPropertyService
     {
-        Task<List<PropertyListViewModel>> GetAllAsync();
+        Task<List<PropertyListViewModel>> SearchAsync(PropertySearchViewModel searchModel);
 
         Task<PropertyDetailsViewModel?> GetByIdAsync(int id);
 

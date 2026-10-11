@@ -69,6 +69,16 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
+        public async Task<List<string>> GetCitiesAsync()
+        {
+            return await _context.Locations
+                .AsNoTracking()
+                .Select(l => l.City)
+                .Distinct()
+                .OrderBy(city => city)
+                .ToListAsync();
+        }
+
         public async Task<bool> ExistsAsync(string city, string neighborhood)
         {
             return await _context.Locations
