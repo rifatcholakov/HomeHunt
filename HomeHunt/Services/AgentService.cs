@@ -34,6 +34,24 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
+        public async Task<AgentDetailsViewModel?> GetByIdAsync(int id)
+        {
+            return await _context.Agents
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Select(a => new AgentDetailsViewModel
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    AgencyName = a.AgencyName,
+                    Email = a.Email,
+                    Phone = a.Phone,
+                    PropertyCount = a.Properties.Count
+                })
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> EmailExistsAsync(string email)
         {
             return await _context.Agents

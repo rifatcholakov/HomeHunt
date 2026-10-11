@@ -6,6 +6,8 @@ namespace HomeHunt.Services
     {
         Task<List<AgentListViewModel>> GetAllAsync();
 
+        Task<AgentDetailsViewModel?> GetByIdAsync(int id);
+
         Task<bool> EmailExistsAsync(string email);
 
         Task<bool> PhoneExistsAsync(string phone);

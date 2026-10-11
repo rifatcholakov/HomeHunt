@@ -18,6 +18,7 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Properties</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,9 @@
                     <td>@agent.Email</td>
                     <td>@agent.Phone</td>
                     <td><span class="badge bg-primary">@agent.PropertyCount</span></td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@agent.Id">Details</a>
+                    </td>
                 </tr>
             }
         </tbody>

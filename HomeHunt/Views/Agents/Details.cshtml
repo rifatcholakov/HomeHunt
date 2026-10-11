@@ -1,0 +1,27 @@
+@model AgentDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.FirstName + " " + Model.LastName;
+}
+
+<h1 class="h2 mb-3">@Model.FirstName @Model.LastName</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Agency</dt>
+            <dd class="col-sm-9">@Model.AgencyName</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Phone</dt>
+            <dd class="col-sm-9">@Model.Phone</dd>
+
+            <dt class="col-sm-3">Properties</dt>
+            <dd class="col-sm-9">@Model.PropertyCount</dd>
+        </dl>
+    </div>
+</div>
+
+<a class="btn btn-outline-secondary" asp-action="Index">Back to Agents</a>

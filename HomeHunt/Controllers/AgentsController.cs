@@ -19,6 +19,18 @@ namespace HomeHunt.Controllers
             return View(agents);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            AgentDetailsViewModel? agent = await _agentService.GetByIdAsync(id);
+
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
+            return View(agent);
+        }
+
         public IActionResult Create()
         {
             return View(new AgentFormViewModel());
