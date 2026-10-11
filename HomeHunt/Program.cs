@@ -21,6 +21,7 @@ namespace HomeHunt
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<IPropertyService, PropertyService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IAgentService, AgentService>();
 

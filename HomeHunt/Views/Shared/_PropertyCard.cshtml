@@ -1,0 +1,28 @@
+@model PropertyListViewModel
+
+@{
+    string defaultImage = Url.Content("~/images/default-property-image.svg");
+    string imageUrl = string.IsNullOrEmpty(Model.ImageUrl) ? defaultImage : Model.ImageUrl;
+}
+
+<div class="col">
+    <div class="card h-100">
+        <img src="@imageUrl" class="card-img-top property-card-image" alt="@Model.Title"
+             onerror="this.onerror=null; this.src='@defaultImage';" />
+        <div class="card-body">
+            <div class="mb-2">
+                <span class="badge bg-secondary">@Model.PropertyType</span>
+                <span class="badge bg-info text-dark">@Model.ListingType</span>
+                <partial name="_StatusBadge" model="Model.Status" />
+            </div>
+            <h2 class="h5 card-title">@Model.Title</h2>
+            <p class="text-muted mb-2">@Model.Neighborhood, @Model.City</p>
+            <p class="h5 mb-2">
+                &euro;@Model.Price.ToString("N0")@(Model.ListingType == ListingType.Rent ? " / month" : "")
+            </p>
+            <p class="mb-0 text-muted">
+                @Model.Area.ToString("N0") m&sup2; &middot; @Model.Bedrooms bed &middot; @Model.Bathrooms bath
+            </p>
+        </div>
+    </div>
+</div>

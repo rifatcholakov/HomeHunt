@@ -1,0 +1,24 @@
+@model PropertyStatus
+
+@{
+    string badgeClass = "bg-secondary";
+
+    if (Model == PropertyStatus.Available)
+    {
+        badgeClass = "bg-success";
+    }
+    else if (Model == PropertyStatus.Reserved)
+    {
+        badgeClass = "bg-warning text-dark";
+    }
+    else if (Model == PropertyStatus.Sold)
+    {
+        badgeClass = "bg-danger";
+    }
+    else if (Model == PropertyStatus.Rented)
+    {
+        badgeClass = "bg-dark";
+    }
+}
+
+<span class="badge @badgeClass">@Model</span>
