@@ -9,6 +9,8 @@ namespace HomeHunt.Services
 
         Task<AgentDetailsViewModel?> GetByIdAsync(int id);
 
+        Task<bool> DeleteAsync(int id);
+
         Task<bool> ExistsAsync(int id);
 
         Task<List<SelectListItem>> GetOptionsAsync();

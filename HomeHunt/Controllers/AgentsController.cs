@@ -31,6 +31,32 @@ namespace HomeHunt.Controllers
             return View(agent);
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            AgentDetailsViewModel? agent = await _agentService.GetByIdAsync(id);
+
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
+            return View(agent);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            bool deleted = await _agentService.DeleteAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The agent and all of their properties were deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Create()
         {
             return View(new AgentFormViewModel());

@@ -53,6 +53,23 @@ namespace HomeHunt.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            Agent? agent = await _context.Agents
+                .Include(a => a.Properties)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (agent == null)
+            {
+                return false;
+            }
+
+            _context.Properties.RemoveRange(agent.Properties);
+            _context.Agents.Remove(agent);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Agents
