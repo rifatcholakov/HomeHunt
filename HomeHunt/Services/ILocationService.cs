@@ -11,7 +11,7 @@ namespace HomeHunt.Services
 
         Task<bool> ExistsAsync(int id);
 
-        Task<bool> ExistsAsync(string city, string neighborhood);
+        Task<bool> ExistsAsync(string city, string neighborhood, int excludeId = 0);
 
         Task<List<SelectListItem>> GetOptionsAsync();
 
@@ -19,8 +19,12 @@ namespace HomeHunt.Services
 
         Task<List<CityCountViewModel>> GetCityCountsAsync();
 
-        Task<string?> GetCityByPostalCodeAsync(string postalCode);
+        Task<string?> GetCityByPostalCodeAsync(string postalCode, int excludeId = 0);
+
+        Task<LocationFormViewModel?> GetEditModelAsync(int id);
 
         Task CreateAsync(LocationFormViewModel model);
+
+        Task<bool> UpdateAsync(int id, LocationFormViewModel model);
     }
 }

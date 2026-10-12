@@ -63,5 +63,55 @@ namespace HomeHunt.Controllers
             TempData["SuccessMessage"] = "The location was created.";
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            LocationFormViewModel? model = await _locationService.GetEditModelAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, LocationFormViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (await _locationService.ExistsAsync(model.City, model.Neighborhood, id))
+            {
+                ModelState.AddModelError(nameof(model.Neighborhood), "This location already exists.");
+                return View(model);
+            }
+
+            string? cityOfPostalCode = await _locationService.GetCityByPostalCodeAsync(model.PostalCode, id);
+
+            if (cityOfPostalCode != null && !string.Equals(cityOfPostalCode, model.City, StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(model.PostalCode), $"This postal code belongs to {cityOfPostalCode}.");
+                return View(model);
+            }
+
+            bool updated = await _locationService.UpdateAsync(id, model);
+
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The location was updated.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 }

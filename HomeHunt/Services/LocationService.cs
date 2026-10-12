@@ -94,19 +94,51 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(string city, string neighborhood)
+        public async Task<bool> ExistsAsync(string city, string neighborhood, int excludeId = 0)
         {
             return await _context.Locations
-                .AnyAsync(l => l.City == city && l.Neighborhood == neighborhood);
+                .AnyAsync(l => l.City == city && l.Neighborhood == neighborhood && l.Id != excludeId);
         }
 
-        public async Task<string?> GetCityByPostalCodeAsync(string postalCode)
+        public async Task<string?> GetCityByPostalCodeAsync(string postalCode, int excludeId = 0)
         {
             return await _context.Locations
                 .AsNoTracking()
-                .Where(l => l.PostalCode == postalCode)
+                .Where(l => l.PostalCode == postalCode && l.Id != excludeId)
                 .Select(l => l.City)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<LocationFormViewModel?> GetEditModelAsync(int id)
+        {
+            return await _context.Locations
+                .AsNoTracking()
+                .Where(l => l.Id == id)
+                .Select(l => new LocationFormViewModel
+                {
+                    Id = l.Id,
+                    City = l.City,
+                    Neighborhood = l.Neighborhood,
+                    PostalCode = l.PostalCode
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateAsync(int id, LocationFormViewModel model)
+        {
+            Location? location = await _context.Locations.FindAsync(id);
+
+            if (location == null)
+            {
+                return false;
+            }
+
+            location.City = Helpers.Capitalize(model.City);
+            location.Neighborhood = Helpers.Capitalize(model.Neighborhood);
+            location.PostalCode = model.PostalCode;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task CreateAsync(LocationFormViewModel model)

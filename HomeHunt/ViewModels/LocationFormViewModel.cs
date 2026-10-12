@@ -10,6 +10,8 @@ namespace HomeHunt.ViewModels
         private string _neighborhood = string.Empty;
         private string _postalCode = string.Empty;
 
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "City is required.")]
         [StringLength(CityMaxLength, MinimumLength = CityMinLength,
             ErrorMessage = "City must be between {2} and {1} characters.")]
