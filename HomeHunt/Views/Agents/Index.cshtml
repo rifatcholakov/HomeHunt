@@ -32,6 +32,8 @@
                     <td><span class="badge bg-primary">@agent.PropertyCount</span></td>
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@agent.Id">Details</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@agent.Id">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@agent.Id">Delete</a>
                     </td>
                 </tr>
             }
