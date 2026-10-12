@@ -124,6 +124,23 @@ namespace HomeHunt.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            Location? location = await _context.Locations
+                .Include(l => l.Properties)
+                .FirstOrDefaultAsync(l => l.Id == id);
+
+            if (location == null)
+            {
+                return false;
+            }
+
+            _context.Properties.RemoveRange(location.Properties);
+            _context.Locations.Remove(location);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateAsync(int id, LocationFormViewModel model)
         {
             Location? location = await _context.Locations.FindAsync(id);

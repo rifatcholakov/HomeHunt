@@ -64,6 +64,32 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            LocationDetailsViewModel? location = await _locationService.GetByIdAsync(id);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return View(location);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            bool deleted = await _locationService.DeleteAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The location and all of its properties were deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Edit(int id)
         {
             LocationFormViewModel? model = await _locationService.GetEditModelAsync(id);

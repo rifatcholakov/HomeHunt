@@ -26,5 +26,7 @@ namespace HomeHunt.Services
         Task CreateAsync(LocationFormViewModel model);
 
         Task<bool> UpdateAsync(int id, LocationFormViewModel model);
+
+        Task<bool> DeleteAsync(int id);
     }
 }
