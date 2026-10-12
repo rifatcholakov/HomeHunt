@@ -24,8 +24,12 @@
                 @Model.Area.ToString("N0") m&sup2; &middot; @Model.Bedrooms bed &middot; @Model.Bathrooms bath
             </p>
         </div>
-        <div class="card-footer bg-white">
-            <a class="btn btn-sm btn-outline-primary" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.Id">View Details</a>
+        <div class="card-footer bg-white border-0 pb-3">
+            <a class="btn btn-primary w-100 mb-2" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.Id">View Details</a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-sm btn-outline-secondary flex-fill" asp-controller="Properties" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-danger flex-fill" asp-controller="Properties" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </div>
         </div>
     </div>
 </div>
