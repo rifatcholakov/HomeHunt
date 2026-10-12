@@ -15,5 +15,11 @@ namespace HomeHunt.ViewModels
         public string Phone { get; set; } = string.Empty;
 
         public int PropertyCount { get; set; }
+
+        public int ForSaleCount { get; set; }
+
+        public int ForRentCount { get; set; }
+
+        public List<PropertyListViewModel> Properties { get; set; } = new List<PropertyListViewModel>();
     }
 }

@@ -1,6 +1,7 @@
 using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
+using HomeHunt.Data.Models.Enums;
 using HomeHunt.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ namespace HomeHunt.Services
 
         public async Task<AgentDetailsViewModel?> GetByIdAsync(int id)
         {
-            return await _context.Agents
+            AgentDetailsViewModel? model = await _context.Agents
                 .AsNoTracking()
                 .Where(a => a.Id == id)
                 .Select(a => new AgentDetailsViewModel
@@ -48,9 +49,37 @@ namespace HomeHunt.Services
                     AgencyName = a.AgencyName,
                     Email = a.Email,
                     Phone = a.Phone,
-                    PropertyCount = a.Properties.Count
+                    Properties = a.Properties
+                        .OrderByDescending(p => p.CreatedOn)
+                        .Select(p => new PropertyListViewModel
+                        {
+                            Id = p.Id,
+                            Title = p.Title,
+                            City = p.Location.City,
+                            Neighborhood = p.Location.Neighborhood,
+                            Price = p.Price,
+                            Area = p.Area,
+                            Bedrooms = p.Bedrooms,
+                            Bathrooms = p.Bathrooms,
+                            PropertyType = p.PropertyType,
+                            ListingType = p.ListingType,
+                            Status = p.Status,
+                            ImageUrl = p.ImageUrl
+                        })
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
+
+            if (model == null)
+            {
+                return null;
+            }
+
+            model.PropertyCount = model.Properties.Count;
+            model.ForSaleCount = model.Properties.Count(p => p.Status == PropertyStatus.Available && p.ListingType == ListingType.Sale);
+            model.ForRentCount = model.Properties.Count(p => p.Status == PropertyStatus.Available && p.ListingType == ListingType.Rent);
+
+            return model;
         }
 
         public async Task<bool> DeleteAsync(int id)
