@@ -15,10 +15,14 @@ namespace HomeHunt.Services
 
         Task<List<SelectListItem>> GetOptionsAsync();
 
-        Task<bool> EmailExistsAsync(string email);
+        Task<bool> EmailExistsAsync(string email, int excludeId = 0);
 
-        Task<bool> PhoneExistsAsync(string phone);
+        Task<bool> PhoneExistsAsync(string phone, int excludeId = 0);
+
+        Task<AgentFormViewModel?> GetEditModelAsync(int id);
 
         Task CreateAsync(AgentFormViewModel model);
+
+        Task<bool> UpdateAsync(int id, AgentFormViewModel model);
     }
 }

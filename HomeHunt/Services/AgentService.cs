@@ -90,16 +90,52 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> EmailExistsAsync(string email)
+        public async Task<bool> EmailExistsAsync(string email, int excludeId = 0)
         {
             return await _context.Agents
-                .AnyAsync(a => a.Email == email);
+                .AnyAsync(a => a.Email == email && a.Id != excludeId);
         }
 
-        public async Task<bool> PhoneExistsAsync(string phone)
+        public async Task<bool> PhoneExistsAsync(string phone, int excludeId = 0)
         {
             return await _context.Agents
-                .AnyAsync(a => a.Phone == phone);
+                .AnyAsync(a => a.Phone == phone && a.Id != excludeId);
+        }
+
+        public async Task<AgentFormViewModel?> GetEditModelAsync(int id)
+        {
+            return await _context.Agents
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Select(a => new AgentFormViewModel
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    Email = a.Email,
+                    Phone = a.Phone,
+                    AgencyName = a.AgencyName
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateAsync(int id, AgentFormViewModel model)
+        {
+            Agent? agent = await _context.Agents.FindAsync(id);
+
+            if (agent == null)
+            {
+                return false;
+            }
+
+            agent.FirstName = Helpers.Capitalize(model.FirstName);
+            agent.LastName = Helpers.Capitalize(model.LastName);
+            agent.Email = model.Email.ToLowerInvariant();
+            agent.Phone = model.Phone;
+            agent.AgencyName = model.AgencyName;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task CreateAsync(AgentFormViewModel model)

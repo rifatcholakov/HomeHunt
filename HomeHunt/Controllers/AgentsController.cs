@@ -31,6 +31,57 @@ namespace HomeHunt.Controllers
             return View(agent);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            AgentFormViewModel? model = await _agentService.GetEditModelAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, AgentFormViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (await _agentService.EmailExistsAsync(model.Email, id))
+            {
+                ModelState.AddModelError(nameof(model.Email), "An agent with this email already exists.");
+            }
+
+            if (await _agentService.PhoneExistsAsync(model.Phone, id))
+            {
+                ModelState.AddModelError(nameof(model.Phone), "An agent with this phone number already exists.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool updated = await _agentService.UpdateAsync(id, model);
+
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "The agent was updated.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
             AgentDetailsViewModel? agent = await _agentService.GetByIdAsync(id);

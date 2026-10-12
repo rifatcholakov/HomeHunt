@@ -12,6 +12,8 @@ namespace HomeHunt.ViewModels
         private string _phone = string.Empty;
         private string _agencyName = string.Empty;
 
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "First name is required.")]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength,
             ErrorMessage = "First name must be between {2} and {1} characters.")]
