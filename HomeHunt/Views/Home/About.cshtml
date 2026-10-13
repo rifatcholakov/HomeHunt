@@ -2,8 +2,37 @@
     ViewData["Title"] = "About";
 }
 
-<h1 class="h2 mb-3">About HomeHunt</h1>
+<section class="bg-primary text-white rounded-3 p-5 text-center mb-4">
+    <h1 class="display-5">About HomeHunt</h1>
+    <p class="lead mb-0">Find your next home, or list one. Properties for sale and for rent, all in one place.</p>
+</section>
 
-<p>HomeHunt is a small real estate site. Visitors can search properties for sale and for rent, filter them by city, type, price, bedrooms and area, and open a property to see its details and the agent who lists it.</p>
-
-<p>Properties, locations and agents can be added through the site, and properties can be edited and deleted.</p>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Looking to buy or rent?</h2>
+                <p class="text-muted">Filter properties by city, type, price, bedrooms and area.</p>
+                <a class="btn btn-primary" asp-controller="Properties" asp-action="Index">Browse Properties</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Have a property to list?</h2>
+                <p class="text-muted">Add it with its location and agent, and edit or remove it any time.</p>
+                <a class="btn btn-outline-primary" asp-controller="Properties" asp-action="Create">Add Property</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Need to talk to someone?</h2>
+                <p class="text-muted">Every property has an agent with an email and a phone number.</p>
+                <a class="btn btn-outline-primary" asp-controller="Agents" asp-action="Index">Meet the Agents</a>
+            </div>
+        </div>
+    </div>
+</div>
