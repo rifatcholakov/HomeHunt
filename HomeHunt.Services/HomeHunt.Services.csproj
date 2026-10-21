@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>HomeHunt</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeHunt.Common\HomeHunt.Common.csproj" />
+    <ProjectReference Include="..\HomeHunt.Data\HomeHunt.Data.csproj" />
+    <ProjectReference Include="..\HomeHunt.Service.Data\HomeHunt.Service.Data.csproj" />
+  </ItemGroup>
+
+</Project>
