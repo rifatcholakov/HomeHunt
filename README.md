@@ -14,6 +14,8 @@
 - [Technologies Used](#-technologies-used)
 - [Prerequisites](#-prerequisites)
 - [Getting Started](#-getting-started)
+  - [Option A: Command Line](#-option-a-command-line)
+  - [Option B: Visual Studio](#-option-b-visual-studio)
 - [Project Structure](#-project-structure)
 - [Features](#-features)
 - [Usage](#-usage)
@@ -72,9 +74,11 @@ You should see a version number for each (the .NET version should start with `8`
 
 ## 🚀 Getting Started
 
-Pick **one** of the two ways below. Each step says what you should see, so you know it worked before moving on.
+Pick **one** of the two ways below: [Option A: Command Line](#-option-a-command-line) or [Option B: Visual Studio](#-option-b-visual-studio). Both start from the same download command. Each step says what you should see, so you know it worked before moving on.
 
-### Option A: Command line
+---
+
+## 🔵 Option A: Command Line
 
 **Step 1. Get the code**
 
@@ -124,20 +128,39 @@ dotnet run --project HomeHunt.Web --launch-profile https
 
 To stop the app, press `Ctrl + C` in the terminal.
 
-### Option B: Visual Studio
+---
 
-1. Open `HomeHunt.sln`.
-2. In **Solution Explorer**, right-click `HomeHunt.Web` and choose **Set as Startup Project**.
-3. Open **Tools → NuGet Package Manager → Package Manager Console**. Set **Default project** (the dropdown at the top of the console) to `HomeHunt.Data`.
-4. Run:
+## 🟣 Option B: Visual Studio
 
-   ```
-   Update-Database
-   ```
+**Step 1. Get the code**
 
-   ✔ The console ends without errors and the `HomeHunt` database is created.
-5. Press **F5** (or the green **https** button). The browser opens the home page.
+```bash
+git clone https://github.com/rifatcholakov/HomeHunt.git
+```
 
+✔ A folder called `HomeHunt` is created. It contains `HomeHunt.sln`.
+
+**Step 2. Open the solution**
+
+Open `HomeHunt.sln` in Visual Studio.
+
+**Step 3. Set the startup project**
+
+In **Solution Explorer**, right-click `HomeHunt.Web` and choose **Set as Startup Project**.
+
+**Step 4. Create the database and the sample data**
+
+Open **Tools → NuGet Package Manager → Package Manager Console**. Set **Default project** (the dropdown at the top of the console) to `HomeHunt.Data`. Then run:
+
+```
+Update-Database
+```
+
+✔ The console ends without errors and the `HomeHunt` database is created.
+
+**Step 5. Run the application**
+
+Press **F5** (or the green **https** button) in the top menu bar of Visual Studio. The browser opens the home page.
 
 ---
 
