@@ -4,6 +4,7 @@ using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Properties;
 using HomeHunt.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeHunt
@@ -22,7 +23,10 @@ namespace HomeHunt
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
 
             builder.Services.AddScoped<IPropertyService, PropertyService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
