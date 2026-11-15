@@ -288,6 +288,10 @@ Key settings in `HomeHunt.Web/appsettings.json`:
   "ConnectionStrings": {
     "DefaultConnection": "Server=.;Database=HomeHunt;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;"
   },
+  "AdminAccount": {
+    "Email": "admin@homehunt.com",
+    "Password": "Admin123!"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information"
@@ -295,6 +299,16 @@ Key settings in `HomeHunt.Web/appsettings.json`:
   }
 }
 ```
+
+### Test accounts
+
+The first time the app starts, it creates three roles (`Administrator`, `Agent` and `User`) and one administrator account:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Administrator | admin@homehunt.com | Admin123! |
+
+Sign in at `/Identity/Account/Login`. These are demo credentials for local testing only. They are stored in the `AdminAccount` section of `HomeHunt.Web/appsettings.json`, so you can change them there before the first run. They are not database or server credentials, so the note above still applies.
 
 > ⚠️ **Never commit sensitive data** (passwords, API keys) to source control. If your connection string contains credentials, store it with [user secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets) or the `ConnectionStrings__DefaultConnection` environment variable.
 
