@@ -1,3 +1,4 @@
+using HomeHunt.Common;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Response;
 using HomeHunt.Service.Data.Locations;
@@ -6,6 +7,7 @@ using HomeHunt.Service.Data.Properties;
 using HomeHunt.Service.Data.Properties.Request;
 using HomeHunt.Service.Data.Properties.Response;
 using HomeHunt.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -110,6 +112,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Create()
         {
             PropertyFormViewModel model = new PropertyFormViewModel();
@@ -119,6 +122,7 @@ namespace HomeHunt.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Create(PropertyFormViewModel model)
         {
             if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
@@ -157,6 +161,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Edit(int id)
         {
             GetPropertyForEditResponseData? property = await _propertyService.GetPropertyForEditAsync(id);
@@ -189,6 +194,7 @@ namespace HomeHunt.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Edit(int id, PropertyFormViewModel model)
         {
             if (id != model.Id)
@@ -237,6 +243,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Delete(int id)
         {
             GetPropertyDetailsResponseData? property = await _propertyService.GetPropertyDetailsAsync(id);
@@ -274,6 +281,7 @@ namespace HomeHunt.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             bool deleted = await _propertyService.DeletePropertyAsync(id);

@@ -1,7 +1,9 @@
+using HomeHunt.Common;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
 using HomeHunt.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeHunt.Controllers
@@ -73,12 +75,14 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public IActionResult Create()
         {
             return View(new LocationFormViewModel());
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Create(LocationFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -111,6 +115,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Delete(int id)
         {
             GetLocationDetailsResponseData? location = await _locationService.GetLocationDetailsAsync(id);
@@ -152,6 +157,7 @@ namespace HomeHunt.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             bool deleted = await _locationService.DeleteLocationAsync(id);
@@ -165,6 +171,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Edit(int id)
         {
             GetLocationForEditResponseData? location = await _locationService.GetLocationForEditAsync(id);
@@ -186,6 +193,7 @@ namespace HomeHunt.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Edit(int id, LocationFormViewModel model)
         {
             if (id != model.Id)

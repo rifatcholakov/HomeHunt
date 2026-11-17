@@ -7,7 +7,7 @@
     string pricePerSquareMeter = Model.Area > 0 ? (Model.Price / Model.Area).ToString("N2") : "-";
 }
 
-<div class="d-flex justify-content-end mb-3">
+<div class="d-flex justify-content-end mb-3" asp-policy="@Policies.CanManageProperties">
     <a class="btn btn-primary me-2" asp-action="Edit" asp-route-id="@Model.Id">Edit Property</a>
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete Property</a>
 </div>

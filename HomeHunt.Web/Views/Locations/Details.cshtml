@@ -9,7 +9,7 @@
         <h1 class="h2 mb-1">@Model.Neighborhood</h1>
         <p class="text-muted mb-0">@Model.City &middot; Postal code @Model.PostalCode</p>
     </div>
-    <div>
+    <div asp-policy="@Policies.CanManageLocations">
         <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit Location</a>
         <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete Location</a>
     </div>
@@ -42,7 +42,7 @@
     @if (Model.Properties.Count == 0)
     {
         <p class="text-muted">There are no properties in this location yet.</p>
-        <a class="btn btn-outline-primary" asp-controller="Properties" asp-action="Create">Add Property</a>
+        <a class="btn btn-outline-primary" asp-controller="Properties" asp-action="Create" asp-policy="@Policies.CanManageProperties">Add Property</a>
     }
     else
     {
