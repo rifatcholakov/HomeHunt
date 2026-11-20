@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using HomeHunt.Common;
 using static HomeHunt.Common.ValidationConstants.Agent;
+using static HomeHunt.Common.Messages.Agent;
+using static HomeHunt.Common.Messages.User;
 
 namespace HomeHunt.ViewModels
 {
@@ -14,9 +16,9 @@ namespace HomeHunt.ViewModels
 
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
+        [Required(ErrorMessage = FirstNameRequiredMessage)]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength,
-            ErrorMessage = "First name must be between {2} and {1} characters.")]
+            ErrorMessage = FirstNameLengthMessage)]
         [Display(Name = "First name")]
         public string FirstName
         {
@@ -30,9 +32,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Last name is required.")]
+        [Required(ErrorMessage = LastNameRequiredMessage)]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength,
-            ErrorMessage = "Last name must be between {2} and {1} characters.")]
+            ErrorMessage = LastNameLengthMessage)]
         [Display(Name = "Last name")]
         public string LastName
         {
@@ -46,9 +48,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
-        [StringLength(EmailMaxLength, ErrorMessage = "Email can be at most {1} characters.")]
+        [Required(ErrorMessage = EmailRequiredMessage)]
+        [EmailAddress(ErrorMessage = EmailInvalidMessage)]
+        [StringLength(EmailMaxLength, ErrorMessage = EmailMaxLengthMessage)]
         public string Email
         {
             get
@@ -61,9 +63,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Phone is required.")]
-        [RegularExpression(PhoneRegex, ErrorMessage = "Phone must start with + and contain 7 to 15 digits.")]
-        [StringLength(PhoneMaxLength, ErrorMessage = "Phone can be at most {1} characters.")]
+        [Required(ErrorMessage = PhoneRequiredMessage)]
+        [RegularExpression(PhoneRegex, ErrorMessage = PhoneFormatMessage)]
+        [StringLength(PhoneMaxLength, ErrorMessage = PhoneMaxLengthMessage)]
         public string Phone
         {
             get
@@ -76,9 +78,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Agency name is required.")]
+        [Required(ErrorMessage = AgencyNameRequiredMessage)]
         [StringLength(AgencyNameMaxLength, MinimumLength = AgencyNameMinLength,
-            ErrorMessage = "Agency name must be between {2} and {1} characters.")]
+            ErrorMessage = AgencyNameLengthMessage)]
         [Display(Name = "Agency")]
         public string AgencyName
         {

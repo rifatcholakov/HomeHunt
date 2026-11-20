@@ -23,6 +23,8 @@ namespace HomeHunt.Service.Data.Agents
 
         Task CreateAgentAsync(CreateAgentRequestData request);
 
+        Task<RegisterAgentResponseData> RegisterAgentAsync(RegisterAgentRequestData request);
+
         Task<bool> UpdateAgentAsync(int id, UpdateAgentRequestData request);
     }
 }

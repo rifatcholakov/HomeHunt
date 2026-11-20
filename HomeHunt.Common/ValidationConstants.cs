@@ -11,6 +11,7 @@ namespace HomeHunt.Common
             public const int DescriptionMaxLength = 2000;
 
             public const int ImageUrlMaxLength = 2048;
+            public const string ImageUrlRegex = @"^https?://\S+$";
 
             public const int PriceMinValue = 1;
             public const int PriceMaxValue = 100000000;
@@ -47,6 +48,12 @@ namespace HomeHunt.Common
 
             public const int AgencyNameMinLength = 2;
             public const int AgencyNameMaxLength = 80;
+        }
+
+        public static class User
+        {
+            public const int PasswordMinLength = 6;
+            public const int PasswordMaxLength = 100;
         }
     }
 }

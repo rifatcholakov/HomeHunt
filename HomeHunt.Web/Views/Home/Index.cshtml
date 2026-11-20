@@ -99,10 +99,14 @@
     </div>
 </section>
 
-<section class="card card-body text-center" asp-policy="@Policies.CanManageProperties">
+<section class="card card-body text-center">
     <h2 class="h4">Have a property to list?</h2>
-    <p class="text-muted">Add it to HomeHunt and it will appear in the search results.</p>
-    <div>
+    <div asp-policy="@Policies.CanManageProperties">
+        <p class="text-muted">Add it to HomeHunt and it will appear in the search results.</p>
         <a class="btn btn-primary" asp-controller="Properties" asp-action="Create">Add Property</a>
+    </div>
+    <div asp-not-policy="@Policies.CanManageProperties">
+        <p class="text-muted">Register as an agent and your listings will appear in the search results.</p>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/RegisterAgent">Register as an agent</a>
     </div>
 </section>

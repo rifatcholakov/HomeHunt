@@ -2,6 +2,7 @@ using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.Common.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
@@ -13,10 +14,12 @@ namespace HomeHunt.Services
     public class AgentService : IAgentService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AgentService(ApplicationDbContext context)
+        public AgentService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IEnumerable<GetAllAgentsResponseData>> GetAllAgentsAsync()
@@ -182,6 +185,62 @@ namespace HomeHunt.Services
 
             _context.Agents.Add(agent);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<RegisterAgentResponseData> RegisterAgentAsync(RegisterAgentRequestData request)
+        {
+            RegisterAgentResponseData response = new RegisterAgentResponseData();
+
+            string email = request.Email.ToLowerInvariant();
+
+            IdentityUser user = new IdentityUser
+            {
+                UserName = email,
+                Email = email
+            };
+
+            IdentityResult createResult = await _userManager.CreateAsync(user, request.Password);
+
+            if (!createResult.Succeeded)
+            {
+                response.Errors.AddRange(createResult.Errors.Select(e => e.Description));
+                return response;
+            }
+
+            IdentityResult roleResult = await _userManager.AddToRolesAsync(user, new[] { Roles.User, Roles.Agent });
+
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                response.Errors.AddRange(roleResult.Errors.Select(e => e.Description));
+                return response;
+            }
+
+            Agent agent = new Agent
+            {
+                FirstName = Helpers.Capitalize(request.FirstName),
+                LastName = Helpers.Capitalize(request.LastName),
+                Email = email,
+                Phone = request.Phone,
+                AgencyName = request.AgencyName,
+                UserId = user.Id
+            };
+
+            try
+            {
+                _context.Agents.Add(agent);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                await _userManager.DeleteAsync(user);
+                response.Errors.Add(Messages.Agent.SaveFailedMessage);
+                return response;
+            }
+
+            response.Succeeded = true;
+            response.UserId = user.Id;
+            return response;
         }
     }
 }

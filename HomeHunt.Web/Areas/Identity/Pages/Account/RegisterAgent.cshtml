@@ -1,0 +1,119 @@
+@page
+@model RegisterAgentModel
+@{
+    ViewData["Title"] = "Become an agent";
+}
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="alert alert-info">
+        You are already signed in as <strong>@User.Identity.Name</strong>. Log out first if you want to register a new agent account.
+    </div>
+}
+else
+{
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-5">
+            <section class="agent-hero text-white rounded-3 p-4 p-lg-5 h-100">
+                <p class="text-uppercase small fw-semibold mb-2 agent-hero-eyebrow">For agents</p>
+                <h1 class="display-6 fw-bold mb-3">List your properties on HomeHunt</h1>
+                <p class="lead mb-4">Create an agent account in a minute and put your listings in front of people who are searching right now.</p>
+
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex mb-3">
+                        <span class="agent-step-number me-3">1</span>
+                        <div>
+                            <strong>Register</strong>
+                            <div class="agent-hero-text">Your account and your agent profile in one form.</div>
+                        </div>
+                    </li>
+                    <li class="d-flex mb-3">
+                        <span class="agent-step-number me-3">2</span>
+                        <div>
+                            <strong>Add your listings</strong>
+                            <div class="agent-hero-text">Sale or rent, with price, area, rooms and a photo link.</div>
+                        </div>
+                    </li>
+                    <li class="d-flex">
+                        <span class="agent-step-number me-3">3</span>
+                        <div>
+                            <strong>Stay in control</strong>
+                            <div class="agent-hero-text">Edit or remove your own properties any time.</div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-1">Register as an agent</h2>
+                    <p class="text-muted mb-4">Already have an account? <a asp-area="Identity" asp-page="/Account/Login">Log in</a></p>
+
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <h3 class="h6 text-uppercase text-muted mb-3">Your account</h3>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Password" class="form-label"></label>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-text">At least 6 characters, with an uppercase letter, a lowercase letter, a digit and a symbol.</div>
+                            </div>
+                        </div>
+
+                        <h3 class="h6 text-uppercase text-muted mb-3">Your agent profile</h3>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.FirstName" class="form-label"></label>
+                                <input asp-for="Input.FirstName" class="form-control" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.LastName" class="form-label"></label>
+                                <input asp-for="Input.LastName" class="form-control" />
+                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Phone" class="form-label"></label>
+                                <input asp-for="Input.Phone" class="form-control" placeholder="+359888123456" />
+                                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.AgencyName" class="form-label"></label>
+                                <input asp-for="Input.AgencyName" class="form-control" />
+                                <span asp-validation-for="Input.AgencyName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Create agent account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

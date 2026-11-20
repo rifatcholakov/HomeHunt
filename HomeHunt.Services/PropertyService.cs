@@ -1,3 +1,4 @@
+using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.Common.Enums;
@@ -56,15 +57,15 @@ namespace HomeHunt.Services
                 query = query.Where(p => p.Area >= request.MinArea.Value);
             }
 
-            if (request.SortBy == "priceAsc")
+            if (request.SortBy == SortOptions.PriceAsc)
             {
                 query = query.OrderBy(p => p.Price);
             }
-            else if (request.SortBy == "priceDesc")
+            else if (request.SortBy == SortOptions.PriceDesc)
             {
                 query = query.OrderByDescending(p => p.Price);
             }
-            else if (request.SortBy == "area")
+            else if (request.SortBy == SortOptions.Area)
             {
                 query = query.OrderByDescending(p => p.Area);
             }

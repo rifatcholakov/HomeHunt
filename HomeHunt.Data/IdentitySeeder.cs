@@ -42,7 +42,7 @@ namespace HomeHunt
 
                 if (!result.Succeeded) {
                     throw new InvalidOperationException(
-                        "Could not create the admin account " + string.Join(", ", result.Errors.Select(e => e.Description))
+                        Messages.User.AdminAccountCreateFailedMessage + string.Join(", ", result.Errors.Select(e => e.Description))
                     );
                 }
             }

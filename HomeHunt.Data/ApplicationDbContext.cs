@@ -31,6 +31,16 @@ namespace HomeHunt.Data
                 .HasIndex(a => a.Phone)
                 .IsUnique();
 
+            builder.Entity<Agent>()
+                .HasIndex(a => a.UserId)
+                .IsUnique();
+
+            builder.Entity<Agent>()
+                .HasOne(a => a.User)
+                .WithOne()
+                .HasForeignKey<Agent>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Property>()
                 .HasOne(p => p.Location)
                 .WithMany(l => l.Properties)

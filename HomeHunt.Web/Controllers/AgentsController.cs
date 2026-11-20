@@ -5,6 +5,7 @@ using HomeHunt.Service.Data.Agents.Response;
 using HomeHunt.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static HomeHunt.Common.Messages.Agent;
 
 namespace HomeHunt.Controllers
 {
@@ -118,12 +119,12 @@ namespace HomeHunt.Controllers
 
             if (await _agentService.EmailExistsAsync(model.Email, id))
             {
-                ModelState.AddModelError(nameof(model.Email), "An agent with this email already exists.");
+                ModelState.AddModelError(nameof(model.Email), EmailExistsMessage);
             }
 
             if (await _agentService.PhoneExistsAsync(model.Phone, id))
             {
-                ModelState.AddModelError(nameof(model.Phone), "An agent with this phone number already exists.");
+                ModelState.AddModelError(nameof(model.Phone), PhoneTakenMessage);
             }
 
             if (!ModelState.IsValid)
@@ -145,7 +146,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The agent was updated.";
+            TempData[TempDataKeys.SuccessMessage] = UpdatedMessage;
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -203,7 +204,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The agent and all of their properties were deleted.";
+            TempData[TempDataKeys.SuccessMessage] = DeletedMessage;
             return RedirectToAction(nameof(Index));
         }
 
@@ -224,12 +225,12 @@ namespace HomeHunt.Controllers
 
             if (await _agentService.EmailExistsAsync(model.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), "An agent with this email already exists.");
+                ModelState.AddModelError(nameof(model.Email), EmailExistsMessage);
             }
 
             if (await _agentService.PhoneExistsAsync(model.Phone))
             {
-                ModelState.AddModelError(nameof(model.Phone), "An agent with this phone number already exists.");
+                ModelState.AddModelError(nameof(model.Phone), PhoneTakenMessage);
             }
 
             if (!ModelState.IsValid)
@@ -246,7 +247,7 @@ namespace HomeHunt.Controllers
                 AgencyName = model.AgencyName
             });
 
-            TempData["SuccessMessage"] = "The agent was created.";
+            TempData[TempDataKeys.SuccessMessage] = CreatedMessage;
             return RedirectToAction(nameof(Index));
         }
     }

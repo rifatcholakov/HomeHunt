@@ -1,3 +1,4 @@
+using HomeHunt.Common;
 using HomeHunt.Common.Enums;
 
 namespace HomeHunt.Service.Data.Properties.Request
@@ -18,6 +19,6 @@ namespace HomeHunt.Service.Data.Properties.Request
 
         public decimal? MinArea { get; set; }
 
-        public string SortBy { get; set; } = "newest";
+        public string SortBy { get; set; } = SortOptions.Newest;
     }
 }
