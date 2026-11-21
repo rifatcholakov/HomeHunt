@@ -4,7 +4,7 @@ namespace HomeHunt.Common
     {
         public static class Account
         {
-            public const string AdminAccountCreateFailedMessage = "Could not create the admin account: ";
+            public const string AdminCreateFailedMessage = "Could not create the admin account: ";
         }
 
         public static class Agent

@@ -37,7 +37,7 @@ namespace HomeHunt.Data
                 if (!result.Succeeded)
                 {
                     throw new InvalidOperationException(
-                        Messages.Account.AdminAccountCreateFailedMessage + string.Join(", ", result.Errors.Select(e => e.Description)));
+                        Messages.Account.AdminCreateFailedMessage + string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
             }
 
