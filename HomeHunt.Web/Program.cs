@@ -11,7 +11,7 @@ namespace HomeHunt
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,8 @@ namespace HomeHunt
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews(options =>
             {
@@ -33,6 +34,14 @@ namespace HomeHunt
             builder.Services.AddScoped<IAgentService, AgentService>();
 
             var app = builder.Build();
+
+            using (IServiceScope scope = app.Services.CreateScope())
+            {
+                string adminEmail = builder.Configuration["AdminAccount:Email"]!;
+                string adminPassword = builder.Configuration["AdminAccount:Password"]!;
+
+                await IdentitySeeder.SeedAsync(scope.ServiceProvider, adminEmail, adminPassword);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -51,6 +60,7 @@ namespace HomeHunt
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

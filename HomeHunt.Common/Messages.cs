@@ -2,6 +2,11 @@ namespace HomeHunt.Common
 {
     public static class Messages
     {
+        public static class Account
+        {
+            public const string AdminAccountCreateFailedMessage = "Could not create the admin account: ";
+        }
+
         public static class Agent
         {
             public const string FirstNameRequiredMessage = "First name is required.";
