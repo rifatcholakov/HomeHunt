@@ -8,6 +8,8 @@ using HomeHunt.Service.Data.Properties.Response;
 using HomeHunt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using HomeHunt.Common;
+using static HomeHunt.Common.Messages.Property;
 
 namespace HomeHunt.Controllers
 {
@@ -31,7 +33,7 @@ namespace HomeHunt.Controllers
         {
             if (searchModel.MinPrice != null && searchModel.MaxPrice != null && searchModel.MinPrice > searchModel.MaxPrice)
             {
-                ModelState.AddModelError(nameof(searchModel.MinPrice), "Minimum price cannot be greater than maximum price.");
+                ModelState.AddModelError(nameof(searchModel.MinPrice), MinPriceGreaterThanMaxMessage);
             }
 
             IEnumerable<string> cities = await _locationService.GetCitiesAsync();
@@ -123,12 +125,12 @@ namespace HomeHunt.Controllers
         {
             if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
             {
-                ModelState.AddModelError(nameof(model.LocationId), "Please select a valid location.");
+                ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
             }
 
             if (model.AgentId != null && !await _agentService.AgentExistsAsync(model.AgentId.Value))
             {
-                ModelState.AddModelError(nameof(model.AgentId), "Please select a valid agent.");
+                ModelState.AddModelError(nameof(model.AgentId), AgentInvalidMessage);
             }
 
             if (!ModelState.IsValid)
@@ -153,7 +155,7 @@ namespace HomeHunt.Controllers
                 AgentId = model.AgentId ?? 0
             });
 
-            TempData["SuccessMessage"] = "The property was created.";
+            TempData[TempDataKeys.SuccessMessage] = CreatedMessage;
             return RedirectToAction(nameof(Index));
         }
 
@@ -198,12 +200,12 @@ namespace HomeHunt.Controllers
 
             if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
             {
-                ModelState.AddModelError(nameof(model.LocationId), "Please select a valid location.");
+                ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
             }
 
             if (model.AgentId != null && !await _agentService.AgentExistsAsync(model.AgentId.Value))
             {
-                ModelState.AddModelError(nameof(model.AgentId), "Please select a valid agent.");
+                ModelState.AddModelError(nameof(model.AgentId), AgentInvalidMessage);
             }
 
             if (!ModelState.IsValid)
@@ -233,7 +235,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The property was updated.";
+            TempData[TempDataKeys.SuccessMessage] = UpdatedMessage;
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -283,7 +285,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The property was deleted.";
+            TempData[TempDataKeys.SuccessMessage] = DeletedMessage;
             return RedirectToAction(nameof(Index));
         }
 

@@ -3,6 +3,7 @@ using HomeHunt.Common;
 using HomeHunt.Common.Enums;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static HomeHunt.Common.Messages.Property;
 using static HomeHunt.Common.ValidationConstants.Property;
 
 namespace HomeHunt.ViewModels
@@ -15,9 +16,9 @@ namespace HomeHunt.ViewModels
 
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Title is required.")]
+        [Required(ErrorMessage = TitleRequiredMessage)]
         [StringLength(TitleMaxLength, MinimumLength = TitleMinLength,
-            ErrorMessage = "Title must be between {2} and {1} characters.")]
+            ErrorMessage = TitleLengthMessage)]
         public string Title
         {
             get
@@ -30,9 +31,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Description is required.")]
+        [Required(ErrorMessage = DescriptionRequiredMessage)]
         [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength,
-            ErrorMessage = "Description must be between {2} and {1} characters.")]
+            ErrorMessage = DescriptionLengthMessage)]
         public string Description
         {
             get
@@ -45,34 +46,34 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Price is required.")]
-        [Range(PriceMinValue, PriceMaxValue, ErrorMessage = "Price must be between {1:N0} and {2:N0}.")]
+        [Required(ErrorMessage = PriceRequiredMessage)]
+        [Range(PriceMinValue, PriceMaxValue, ErrorMessage = PriceRangeMessage)]
         public decimal? Price { get; set; }
 
-        [Required(ErrorMessage = "Area is required.")]
-        [Range(AreaMinValue, AreaMaxValue, ErrorMessage = "Area must be between {1:N0} and {2:N0} m².")]
+        [Required(ErrorMessage = AreaRequiredMessage)]
+        [Range(AreaMinValue, AreaMaxValue, ErrorMessage = AreaRangeMessage)]
         [Display(Name = "Area (m²)")]
         public decimal? Area { get; set; }
 
-        [Range(BedroomsMinValue, BedroomsMaxValue, ErrorMessage = "Bedrooms must be between {1} and {2}.")]
+        [Range(BedroomsMinValue, BedroomsMaxValue, ErrorMessage = BedroomsRangeMessage)]
         public int Bedrooms { get; set; }
 
-        [Range(BathroomsMinValue, BathroomsMaxValue, ErrorMessage = "Bathrooms must be between {1} and {2}.")]
+        [Range(BathroomsMinValue, BathroomsMaxValue, ErrorMessage = BathroomsRangeMessage)]
         public int Bathrooms { get; set; }
 
-        [EnumDataType(typeof(PropertyType), ErrorMessage = "Please select a valid property type.")]
+        [EnumDataType(typeof(PropertyType), ErrorMessage = PropertyTypeInvalidMessage)]
         [Display(Name = "Property type")]
         public PropertyType PropertyType { get; set; }
 
-        [EnumDataType(typeof(ListingType), ErrorMessage = "Please select a valid listing type.")]
+        [EnumDataType(typeof(ListingType), ErrorMessage = ListingTypeInvalidMessage)]
         [Display(Name = "Listing type")]
         public ListingType ListingType { get; set; }
 
-        [EnumDataType(typeof(PropertyStatus), ErrorMessage = "Please select a valid status.")]
+        [EnumDataType(typeof(PropertyStatus), ErrorMessage = StatusInvalidMessage)]
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
 
-        [StringLength(ImageUrlMaxLength, ErrorMessage = "The link can be at most {1} characters.")]
-        [RegularExpression(@"^https?://\S+$", ErrorMessage = "Enter a valid link that starts with http:// or https://")]
+        [StringLength(ImageUrlMaxLength, ErrorMessage = ImageUrlMaxLengthMessage)]
+        [RegularExpression(ImageUrlRegex, ErrorMessage = ImageUrlInvalidMessage)]
         [Display(Name = "Image link (optional)")]
         public string? ImageUrl
         {
@@ -86,11 +87,11 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Please select a location.")]
+        [Required(ErrorMessage = LocationRequiredMessage)]
         [Display(Name = "Location")]
         public int? LocationId { get; set; }
 
-        [Required(ErrorMessage = "Please select an agent.")]
+        [Required(ErrorMessage = AgentRequiredMessage)]
         [Display(Name = "Agent")]
         public int? AgentId { get; set; }
 

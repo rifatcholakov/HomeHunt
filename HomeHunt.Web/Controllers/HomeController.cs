@@ -11,6 +11,8 @@ namespace HomeHunt.Controllers
 {
     public class HomeController : Controller
     {
+        private const int RecentPropertiesCount = 3;
+
         private readonly IPropertyService _propertyService;
         private readonly ILocationService _locationService;
 
@@ -22,7 +24,7 @@ namespace HomeHunt.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IEnumerable<GetPropertiesResponseData> recentProperties = await _propertyService.GetRecentPropertiesAsync(3);
+            IEnumerable<GetPropertiesResponseData> recentProperties = await _propertyService.GetRecentPropertiesAsync(RecentPropertiesCount);
             IEnumerable<string> cities = await _locationService.GetCitiesAsync();
             IEnumerable<GetCityCountsResponseData> cityCounts = await _locationService.GetCityCountsAsync();
 

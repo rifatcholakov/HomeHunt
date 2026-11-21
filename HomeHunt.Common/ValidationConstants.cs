@@ -23,6 +23,10 @@ namespace HomeHunt.Common
 
             public const int BathroomsMinValue = 0;
             public const int BathroomsMaxValue = 50;
+
+            public const int SearchMinValue = 0;
+
+            public const string ImageUrlRegex = @"^https?://\S+$";
         }
 
         public static class Location

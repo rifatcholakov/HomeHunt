@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using static HomeHunt.Common.Messages.Agent;
 using static HomeHunt.Common.ValidationConstants.Agent;
 
 namespace HomeHunt.Data.Models
@@ -8,31 +9,31 @@ namespace HomeHunt.Data.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
+        [Required(ErrorMessage = FirstNameRequiredMessage)]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength,
-            ErrorMessage = "First name must be between {2} and {1} characters.")]
+            ErrorMessage = FirstNameLengthMessage)]
         [Display(Name = "First name")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Last name is required.")]
+        [Required(ErrorMessage = LastNameRequiredMessage)]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength,
-            ErrorMessage = "Last name must be between {2} and {1} characters.")]
+            ErrorMessage = LastNameLengthMessage)]
         [Display(Name = "Last name")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        [Required(ErrorMessage = EmailRequiredMessage)]
+        [EmailAddress(ErrorMessage = EmailInvalidMessage)]
         [StringLength(EmailMaxLength)]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Phone is required.")]
-        [Phone(ErrorMessage = "Please enter a valid phone number.")]
+        [Required(ErrorMessage = PhoneRequiredMessage)]
+        [Phone(ErrorMessage = PhoneInvalidMessage)]
         [StringLength(PhoneMaxLength)]
         public string Phone { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Agency name is required.")]
+        [Required(ErrorMessage = AgencyNameRequiredMessage)]
         [StringLength(AgencyNameMaxLength, MinimumLength = AgencyNameMinLength,
-            ErrorMessage = "Agency name must be between {2} and {1} characters.")]
+            ErrorMessage = AgencyNameLengthMessage)]
         [Display(Name = "Agency")]
         public string AgencyName { get; set; } = string.Empty;
 

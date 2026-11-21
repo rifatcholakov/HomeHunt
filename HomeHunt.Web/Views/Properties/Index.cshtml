@@ -37,10 +37,10 @@
         <div class="col-md-3">
             <label asp-for="SortBy" class="form-label"></label>
             <select asp-for="SortBy" class="form-select">
-                <option value="newest">Newest first</option>
-                <option value="priceAsc">Price: low to high</option>
-                <option value="priceDesc">Price: high to low</option>
-                <option value="area">Largest area</option>
+                <option value="@SortOptions.Newest">Newest first</option>
+                <option value="@SortOptions.PriceAsc">Price: low to high</option>
+                <option value="@SortOptions.PriceDesc">Price: high to low</option>
+                <option value="@SortOptions.Area">Largest area</option>
             </select>
         </div>
 

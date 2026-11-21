@@ -3,6 +3,8 @@ using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
 using HomeHunt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using HomeHunt.Common;
+using static HomeHunt.Common.Messages.Location;
 
 namespace HomeHunt.Controllers
 {
@@ -88,7 +90,7 @@ namespace HomeHunt.Controllers
 
             if (await _locationService.LocationExistsAsync(model.City, model.Neighborhood))
             {
-                ModelState.AddModelError(nameof(model.Neighborhood), "This location already exists.");
+                ModelState.AddModelError(nameof(model.Neighborhood), AlreadyExistsMessage);
                 return View(model);
             }
 
@@ -96,7 +98,7 @@ namespace HomeHunt.Controllers
 
             if (cityOfPostalCode != null && !string.Equals(cityOfPostalCode, model.City, StringComparison.OrdinalIgnoreCase))
             {
-                ModelState.AddModelError(nameof(model.PostalCode), $"This postal code belongs to {cityOfPostalCode}.");
+                ModelState.AddModelError(nameof(model.PostalCode), string.Format(PostalCodeBelongsToMessage, cityOfPostalCode));
                 return View(model);
             }
 
@@ -107,7 +109,7 @@ namespace HomeHunt.Controllers
                 PostalCode = model.PostalCode
             });
 
-            TempData["SuccessMessage"] = "The location was created.";
+            TempData[TempDataKeys.SuccessMessage] = CreatedMessage;
             return RedirectToAction(nameof(Index));
         }
 
@@ -161,7 +163,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The location and all of its properties were deleted.";
+            TempData[TempDataKeys.SuccessMessage] = DeletedMessage;
             return RedirectToAction(nameof(Index));
         }
 
@@ -200,7 +202,7 @@ namespace HomeHunt.Controllers
 
             if (await _locationService.LocationExistsAsync(model.City, model.Neighborhood, id))
             {
-                ModelState.AddModelError(nameof(model.Neighborhood), "This location already exists.");
+                ModelState.AddModelError(nameof(model.Neighborhood), AlreadyExistsMessage);
                 return View(model);
             }
 
@@ -208,7 +210,7 @@ namespace HomeHunt.Controllers
 
             if (cityOfPostalCode != null && !string.Equals(cityOfPostalCode, model.City, StringComparison.OrdinalIgnoreCase))
             {
-                ModelState.AddModelError(nameof(model.PostalCode), $"This postal code belongs to {cityOfPostalCode}.");
+                ModelState.AddModelError(nameof(model.PostalCode), string.Format(PostalCodeBelongsToMessage, cityOfPostalCode));
                 return View(model);
             }
 
@@ -224,7 +226,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "The location was updated.";
+            TempData[TempDataKeys.SuccessMessage] = UpdatedMessage;
             return RedirectToAction(nameof(Details), new { id });
         }
     }

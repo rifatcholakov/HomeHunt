@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using HomeHunt.Common;
+using static HomeHunt.Common.Messages.Location;
 using static HomeHunt.Common.ValidationConstants.Location;
 
 namespace HomeHunt.ViewModels
@@ -12,9 +13,9 @@ namespace HomeHunt.ViewModels
 
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "City is required.")]
+        [Required(ErrorMessage = CityRequiredMessage)]
         [StringLength(CityMaxLength, MinimumLength = CityMinLength,
-            ErrorMessage = "City must be between {2} and {1} characters.")]
+            ErrorMessage = CityLengthMessage)]
         public string City
         {
             get
@@ -27,9 +28,9 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Neighborhood is required.")]
+        [Required(ErrorMessage = NeighborhoodRequiredMessage)]
         [StringLength(NeighborhoodMaxLength, MinimumLength = NeighborhoodMinLength,
-            ErrorMessage = "Neighborhood must be between {2} and {1} characters.")]
+            ErrorMessage = NeighborhoodLengthMessage)]
         public string Neighborhood
         {
             get
@@ -42,8 +43,8 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "Postal code is required.")]
-        [RegularExpression(PostalCodeRegex, ErrorMessage = "Postal code must contain exactly 4 digits.")]
+        [Required(ErrorMessage = PostalCodeRequiredMessage)]
+        [RegularExpression(PostalCodeRegex, ErrorMessage = PostalCodeFormatMessage)]
         [Display(Name = "Postal code")]
         public string PostalCode
         {
