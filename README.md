@@ -292,6 +292,13 @@ Key settings in `HomeHunt.Web/appsettings.json`:
     "Email": "admin@homehunt.com",
     "Password": "Admin123!"
   },
+  "DemoUser": {
+    "Email": "user@homehunt.com",
+    "Password": "User123!"
+  },
+  "DemoAgents": {
+    "Password": "Agent123!"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information"
@@ -302,13 +309,15 @@ Key settings in `HomeHunt.Web/appsettings.json`:
 
 ### Test accounts
 
-The first time the app starts, it creates three roles (`Administrator`, `Agent` and `User`) and one administrator account:
+The first time the app starts, it creates three roles (`Administrator`, `Agent` and `User`), an administrator, a demo user and seven demo agents with their sample properties. Every account can log in:
 
 | Role | Email | Password |
 |------|-------|----------|
 | Administrator | admin@homehunt.com | Admin123! |
+| User | user@homehunt.com | User123! |
+| Agent | ivan.petrov@homehunt.com | Agent123! |
 
-Sign in at `/Identity/Account/Login`. These are demo credentials for local testing only. They are stored in the `AdminAccount` section of `HomeHunt.Web/appsettings.json`, so you can change them there before the first run. They are not database or server credentials, so the note above still applies.
+Sign in at `/Identity/Account/Login`. These are demo credentials for local testing only. All seven demo agents share the password `Agent123!`. Their emails are `firstname.lastname@homehunt.com`, for example `maria.georgieva@homehunt.com` (the full list is in `SeedData.cs`). The passwords are stored in the `AdminAccount`, `DemoUser` and `DemoAgents` sections of `HomeHunt.Web/appsettings.json`, so you can change them there before the first run. They are not database or server credentials, so the note above still applies.
 
 > ⚠️ **Never commit sensitive data** (passwords, API keys) to source control. If your connection string contains credentials, store it with [user secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets) or the `ConnectionStrings__DefaultConnection` environment variable.
 

@@ -37,10 +37,7 @@ namespace HomeHunt
 
             using (IServiceScope scope = app.Services.CreateScope())
             {
-                string adminEmail = builder.Configuration["AdminAccount:Email"]!;
-                string adminPassword = builder.Configuration["AdminAccount:Password"]!;
-
-                await IdentitySeeder.SeedAsync(scope.ServiceProvider, adminEmail, adminPassword);
+                await IdentitySeeder.SeedAsync(scope.ServiceProvider);
             }
 
             // Configure the HTTP request pipeline.

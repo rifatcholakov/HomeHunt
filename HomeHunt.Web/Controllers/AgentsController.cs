@@ -114,11 +114,6 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            if (await _agentService.EmailExistsAsync(model.Email, id))
-            {
-                ModelState.AddModelError(nameof(model.Email), EmailExistsMessage);
-            }
-
             if (await _agentService.PhoneExistsAsync(model.Phone, id))
             {
                 ModelState.AddModelError(nameof(model.Phone), PhoneTakenMessage);
@@ -133,7 +128,6 @@ namespace HomeHunt.Controllers
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                Email = model.Email,
                 Phone = model.Phone,
                 AgencyName = model.AgencyName
             });
@@ -205,11 +199,11 @@ namespace HomeHunt.Controllers
 
         public IActionResult Create()
         {
-            return View(new AgentFormViewModel());
+            return View(new AgentCreateViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(AgentFormViewModel model)
+        public async Task<IActionResult> Create(AgentCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -231,14 +225,25 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            await _agentService.CreateAgentAsync(new CreateAgentRequestData
+            CreateAgentResponseData result = await _agentService.CreateAgentAsync(new CreateAgentRequestData
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
                 Phone = model.Phone,
-                AgencyName = model.AgencyName
+                AgencyName = model.AgencyName,
+                Password = model.Password
             });
+
+            if (!result.Succeeded)
+            {
+                foreach (string error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+
+                return View(model);
+            }
 
             TempData[TempDataKeys.SuccessMessage] = CreatedMessage;
             return RedirectToAction(nameof(Index));

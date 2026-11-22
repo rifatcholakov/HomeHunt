@@ -247,7 +247,7 @@ namespace HomeHunt.Services
                     AgentId = p.AgentId,
                     AgentFirstName = p.Agent.FirstName,
                     AgentLastName = p.Agent.LastName,
-                    AgentEmail = p.Agent.Email,
+                    AgentEmail = p.Agent.User.Email!,
                     AgentPhone = p.Agent.Phone
                 })
                 .FirstOrDefaultAsync();

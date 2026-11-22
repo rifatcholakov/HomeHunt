@@ -27,7 +27,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _title = Helpers.Normalize(value);
+                _title = Helpers.NormalizeWhitespace(value);
             }
         }
 

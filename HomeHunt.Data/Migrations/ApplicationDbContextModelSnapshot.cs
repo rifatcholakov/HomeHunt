@@ -35,11 +35,6 @@ namespace HomeHunt.Data.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -55,80 +50,19 @@ namespace HomeHunt.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Agents");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AgencyName = "Sunrise Estates",
-                            Email = "ivan.petrov@example.com",
-                            FirstName = "Ivan",
-                            LastName = "Petrov",
-                            Phone = "+359888100001"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AgencyName = "Sunrise Estates",
-                            Email = "maria.georgieva@example.com",
-                            FirstName = "Maria",
-                            LastName = "Georgieva",
-                            Phone = "+359888100002"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AgencyName = "Balkan Homes",
-                            Email = "georgi.dimitrov@example.com",
-                            FirstName = "Georgi",
-                            LastName = "Dimitrov",
-                            Phone = "+359888100003"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AgencyName = "Balkan Homes",
-                            Email = "elena.stoyanova@example.com",
-                            FirstName = "Elena",
-                            LastName = "Stoyanova",
-                            Phone = "+359888100004"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AgencyName = "Black Sea Realty",
-                            Email = "nikolay.ivanov@example.com",
-                            FirstName = "Nikolay",
-                            LastName = "Ivanov",
-                            Phone = "+359888100005"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AgencyName = "Black Sea Realty",
-                            Email = "desislava.koleva@example.com",
-                            FirstName = "Desislava",
-                            LastName = "Koleva",
-                            Phone = "+359888100006"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AgencyName = "Rhodope Properties",
-                            Email = "stefan.hristov@example.com",
-                            FirstName = "Stefan",
-                            LastName = "Hristov",
-                            Phone = "+359888100007"
-                        });
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("HomeHunt.Data.Models.Location", b =>
@@ -285,210 +219,6 @@ namespace HomeHunt.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Properties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AgentId = 1,
-                            Area = 82m,
-                            Bathrooms = 1,
-                            Bedrooms = 2,
-                            CreatedOn = new DateTime(2026, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Renovated apartment close to the park with a large living room, a balcony and a parking spot in the garage.",
-                            ImageUrl = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 1,
-                            Price = 185000m,
-                            PropertyType = 0,
-                            Status = 0,
-                            Title = "Bright two-bedroom apartment in Lozenets"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AgentId = 1,
-                            Area = 36m,
-                            Bathrooms = 1,
-                            Bedrooms = 1,
-                            CreatedOn = new DateTime(2026, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Fully furnished studio with a small kitchen and a new bathroom. A five minute walk to the metro station.",
-                            ImageUrl = "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 1,
-                            LocationId = 2,
-                            Price = 650m,
-                            PropertyType = 2,
-                            Status = 0,
-                            Title = "Modern studio near the metro"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AgentId = 2,
-                            Area = 105m,
-                            Bathrooms = 2,
-                            Bedrooms = 3,
-                            CreatedOn = new DateTime(2026, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Large apartment on the fifth floor with a lift, two terraces and a view of Vitosha mountain.",
-                            ListingType = 0,
-                            LocationId = 2,
-                            Price = 158000m,
-                            PropertyType = 0,
-                            Status = 1,
-                            Title = "Three-bedroom apartment in Mladost"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AgentId = 3,
-                            Area = 160m,
-                            Bathrooms = 2,
-                            Bedrooms = 0,
-                            CreatedOn = new DateTime(2026, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Open space office with two meeting rooms, air conditioning and four parking places.",
-                            ImageUrl = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 1,
-                            LocationId = 2,
-                            Price = 2400m,
-                            PropertyType = 3,
-                            Status = 0,
-                            Title = "Office space in Business Park"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AgentId = 4,
-                            Area = 70m,
-                            Bathrooms = 1,
-                            Bedrooms = 2,
-                            CreatedOn = new DateTime(2026, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Unfurnished apartment with central heating, ready to move in. Pets are allowed.",
-                            ImageUrl = "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 1,
-                            LocationId = 3,
-                            Price = 520m,
-                            PropertyType = 0,
-                            Status = 3,
-                            Title = "Two-bedroom apartment for rent in Lyulin"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AgentId = 4,
-                            Area = 78m,
-                            Bathrooms = 1,
-                            Bedrooms = 1,
-                            CreatedOn = new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Creative loft in the old creative quarter of Plovdiv with high ceilings, exposed bricks and a lot of natural light.",
-                            ImageUrl = "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 4,
-                            Price = 139000m,
-                            PropertyType = 0,
-                            Status = 0,
-                            Title = "Loft in the heart of Kapana"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AgentId = 3,
-                            Area = 45m,
-                            Bathrooms = 1,
-                            Bedrooms = 0,
-                            CreatedOn = new DateTime(2026, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Ground floor shop with a big window on a busy pedestrian street. Suitable for a cafe or a boutique.",
-                            ImageUrl = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 1,
-                            LocationId = 4,
-                            Price = 1100m,
-                            PropertyType = 4,
-                            Status = 0,
-                            Title = "Small shop on the main street"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AgentId = 5,
-                            Area = 95m,
-                            Bathrooms = 2,
-                            Bedrooms = 2,
-                            CreatedOn = new DateTime(2026, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Two-bedroom apartment with a big terrace and a view of the sea. The building has an elevator and a guarded parking.",
-                            ImageUrl = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 6,
-                            Price = 245000m,
-                            PropertyType = 0,
-                            Status = 0,
-                            Title = "Sea view apartment in Chaika"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AgentId = 5,
-                            Area = 310m,
-                            Bathrooms = 4,
-                            Bedrooms = 5,
-                            CreatedOn = new DateTime(2026, 9, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Modern house with a swimming pool, three bathrooms and a smart heating system. Quiet area near the forest.",
-                            ImageUrl = "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 7,
-                            Price = 560000m,
-                            PropertyType = 1,
-                            Status = 1,
-                            Title = "Luxury house in Briz"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AgentId = 6,
-                            Area = 76m,
-                            Bathrooms = 1,
-                            Bedrooms = 2,
-                            CreatedOn = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Two-bedroom apartment next to the Sea Garden, on the third floor of a well maintained building.",
-                            ImageUrl = "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 8,
-                            Price = 128000m,
-                            PropertyType = 0,
-                            Status = 2,
-                            Title = "Apartment in Lazur near the park"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AgentId = 5,
-                            Area = 600m,
-                            Bathrooms = 0,
-                            Bedrooms = 0,
-                            CreatedOn = new DateTime(2026, 9, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Flat plot of land in a developing area with electricity and water at the border. Permission for a house up to three floors.",
-                            ListingType = 0,
-                            LocationId = 7,
-                            Price = 95000m,
-                            PropertyType = 5,
-                            Status = 0,
-                            Title = "Building plot in Briz"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            AgentId = 7,
-                            Area = 150m,
-                            Bathrooms = 2,
-                            Bedrooms = 3,
-                            CreatedOn = new DateTime(2026, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Old house in good condition, with a big yard and a view of Pirin mountain. Needs a small renovation.",
-                            ImageUrl = "https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=70",
-                            ListingType = 0,
-                            LocationId = 9,
-                            Price = 175000m,
-                            PropertyType = 1,
-                            Status = 0,
-                            Title = "House with mountain view in Varosha"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -691,6 +421,17 @@ namespace HomeHunt.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("HomeHunt.Data.Models.Agent", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithOne()
+                        .HasForeignKey("HomeHunt.Data.Models.Agent", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HomeHunt.Data.Models.Property", b =>

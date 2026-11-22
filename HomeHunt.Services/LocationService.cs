@@ -181,8 +181,8 @@ namespace HomeHunt.Services
                 return false;
             }
 
-            location.City = Helpers.Capitalize(request.City);
-            location.Neighborhood = Helpers.Capitalize(request.Neighborhood);
+            location.City = Helpers.CapitalizeFirstLetter(request.City);
+            location.Neighborhood = Helpers.CapitalizeFirstLetter(request.Neighborhood);
             location.PostalCode = request.PostalCode;
 
             await _context.SaveChangesAsync();
@@ -193,8 +193,8 @@ namespace HomeHunt.Services
         {
             Location location = new Location
             {
-                City = Helpers.Capitalize(request.City),
-                Neighborhood = Helpers.Capitalize(request.Neighborhood),
+                City = Helpers.CapitalizeFirstLetter(request.City),
+                Neighborhood = Helpers.CapitalizeFirstLetter(request.Neighborhood),
                 PostalCode = request.PostalCode
             };
 

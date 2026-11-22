@@ -27,7 +27,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _firstName = Helpers.Normalize(value);
+                _firstName = Helpers.NormalizeWhitespace(value);
             }
         }
 
@@ -43,7 +43,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _lastName = Helpers.Normalize(value);
+                _lastName = Helpers.NormalizeWhitespace(value);
             }
         }
 
@@ -58,7 +58,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _email = Helpers.Normalize(value);
+                _email = Helpers.NormalizeWhitespace(value);
             }
         }
 
@@ -73,7 +73,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _phone = Helpers.NormalizePhone(value);
+                _phone = Helpers.NormalizePhoneNumber(value);
             }
         }
 
@@ -89,7 +89,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _agencyName = Helpers.Normalize(value);
+                _agencyName = Helpers.NormalizeWhitespace(value);
             }
         }
     }

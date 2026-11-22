@@ -15,13 +15,13 @@ namespace HomeHunt.Service.Data.Agents
 
         Task<IEnumerable<GetAgentOptionsResponseData>> GetAgentOptionsAsync();
 
-        Task<bool> EmailExistsAsync(string email, int excludeId = 0);
+        Task<bool> EmailExistsAsync(string email);
 
         Task<bool> PhoneExistsAsync(string phone, int excludeId = 0);
 
         Task<GetAgentForEditResponseData?> GetAgentForEditAsync(int id);
 
-        Task CreateAgentAsync(CreateAgentRequestData request);
+        Task<CreateAgentResponseData> CreateAgentAsync(CreateAgentRequestData request);
 
         Task<bool> UpdateAgentAsync(int id, UpdateAgentRequestData request);
     }

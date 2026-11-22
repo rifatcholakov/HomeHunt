@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using static HomeHunt.Common.Messages.Agent;
 using static HomeHunt.Common.ValidationConstants.Agent;
@@ -21,11 +22,6 @@ namespace HomeHunt.Data.Models
         [Display(Name = "Last name")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = EmailRequiredMessage)]
-        [EmailAddress(ErrorMessage = EmailInvalidMessage)]
-        [StringLength(EmailMaxLength)]
-        public string Email { get; set; } = string.Empty;
-
         [Required(ErrorMessage = PhoneRequiredMessage)]
         [Phone(ErrorMessage = PhoneInvalidMessage)]
         [StringLength(PhoneMaxLength)]
@@ -36,6 +32,10 @@ namespace HomeHunt.Data.Models
             ErrorMessage = AgencyNameLengthMessage)]
         [Display(Name = "Agency")]
         public string AgencyName { get; set; } = string.Empty;
+
+        public string UserId { get; set; } = string.Empty;
+
+        public IdentityUser User { get; set; } = null!;
 
         public ICollection<Property> Properties { get; set; } = new List<Property>();
     }

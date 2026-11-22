@@ -24,7 +24,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _city = Helpers.Normalize(value);
+                _city = Helpers.NormalizeWhitespace(value);
             }
         }
 
@@ -39,7 +39,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _neighborhood = Helpers.Normalize(value);
+                _neighborhood = Helpers.NormalizeWhitespace(value);
             }
         }
 
@@ -54,7 +54,7 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _postalCode = Helpers.Normalize(value);
+                _postalCode = Helpers.NormalizeWhitespace(value);
             }
         }
     }

@@ -115,7 +115,7 @@ namespace HomeHunt.Controllers
         public async Task<IActionResult> Create()
         {
             PropertyFormViewModel model = new PropertyFormViewModel();
-            await FillDropdownsAsync(model);
+            await PopulateLocationAndAgentOptionsAsync(model);
 
             return View(model);
         }
@@ -135,7 +135,7 @@ namespace HomeHunt.Controllers
 
             if (!ModelState.IsValid)
             {
-                await FillDropdownsAsync(model);
+                await PopulateLocationAndAgentOptionsAsync(model);
                 return View(model);
             }
 
@@ -185,7 +185,7 @@ namespace HomeHunt.Controllers
                 AgentId = property.AgentId
             };
 
-            await FillDropdownsAsync(model);
+            await PopulateLocationAndAgentOptionsAsync(model);
 
             return View(model);
         }
@@ -210,7 +210,7 @@ namespace HomeHunt.Controllers
 
             if (!ModelState.IsValid)
             {
-                await FillDropdownsAsync(model);
+                await PopulateLocationAndAgentOptionsAsync(model);
                 return View(model);
             }
 
@@ -289,7 +289,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task FillDropdownsAsync(PropertyFormViewModel model)
+        private async Task PopulateLocationAndAgentOptionsAsync(PropertyFormViewModel model)
         {
             IEnumerable<GetLocationOptionsResponseData> locations = await _locationService.GetLocationOptionsAsync();
             IEnumerable<GetAgentOptionsResponseData> agents = await _agentService.GetAgentOptionsAsync();

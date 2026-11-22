@@ -2,6 +2,7 @@ using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.Common.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
@@ -13,10 +14,12 @@ namespace HomeHunt.Services
     public class AgentService : IAgentService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AgentService(ApplicationDbContext context)
+        public AgentService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IEnumerable<GetAllAgentsResponseData>> GetAllAgentsAsync()
@@ -31,7 +34,7 @@ namespace HomeHunt.Services
                     FirstName = a.FirstName,
                     LastName = a.LastName,
                     AgencyName = a.AgencyName,
-                    Email = a.Email,
+                    Email = a.User.Email!,
                     Phone = a.Phone,
                     PropertyCount = a.Properties.Count
                 })
@@ -49,7 +52,7 @@ namespace HomeHunt.Services
                     FirstName = a.FirstName,
                     LastName = a.LastName,
                     AgencyName = a.AgencyName,
-                    Email = a.Email,
+                    Email = a.User.Email!,
                     Phone = a.Phone,
                     Properties = a.Properties
                         .OrderByDescending(p => p.CreatedOn)
@@ -88,6 +91,7 @@ namespace HomeHunt.Services
         {
             Agent? agent = await _context.Agents
                 .Include(a => a.Properties)
+                .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (agent == null)
@@ -95,9 +99,13 @@ namespace HomeHunt.Services
                 return false;
             }
 
+            IdentityUser user = agent.User;
+
             _context.Properties.RemoveRange(agent.Properties);
             _context.Agents.Remove(agent);
             await _context.SaveChangesAsync();
+
+            await _userManager.DeleteAsync(user);
             return true;
         }
 
@@ -121,10 +129,9 @@ namespace HomeHunt.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> EmailExistsAsync(string email, int excludeId = 0)
+        public async Task<bool> EmailExistsAsync(string email)
         {
-            return await _context.Agents
-                .AnyAsync(a => a.Email == email && a.Id != excludeId);
+            return await _userManager.FindByEmailAsync(email) != null;
         }
 
         public async Task<bool> PhoneExistsAsync(string phone, int excludeId = 0)
@@ -143,7 +150,7 @@ namespace HomeHunt.Services
                     Id = a.Id,
                     FirstName = a.FirstName,
                     LastName = a.LastName,
-                    Email = a.Email,
+                    Email = a.User.Email!,
                     Phone = a.Phone,
                     AgencyName = a.AgencyName
                 })
@@ -159,9 +166,8 @@ namespace HomeHunt.Services
                 return false;
             }
 
-            agent.FirstName = Helpers.Capitalize(request.FirstName);
-            agent.LastName = Helpers.Capitalize(request.LastName);
-            agent.Email = request.Email.ToLowerInvariant();
+            agent.FirstName = Helpers.CapitalizeFirstLetter(request.FirstName);
+            agent.LastName = Helpers.CapitalizeFirstLetter(request.LastName);
             agent.Phone = request.Phone;
             agent.AgencyName = request.AgencyName;
 
@@ -169,19 +175,58 @@ namespace HomeHunt.Services
             return true;
         }
 
-        public async Task CreateAgentAsync(CreateAgentRequestData request)
+        public async Task<CreateAgentResponseData> CreateAgentAsync(CreateAgentRequestData request)
         {
-            Agent agent = new Agent
+            CreateAgentResponseData response = new CreateAgentResponseData();
+
+            string email = request.Email.ToLowerInvariant();
+
+            IdentityUser user = new IdentityUser
             {
-                FirstName = Helpers.Capitalize(request.FirstName),
-                LastName = Helpers.Capitalize(request.LastName),
-                Email = request.Email.ToLowerInvariant(),
-                Phone = request.Phone,
-                AgencyName = request.AgencyName
+                UserName = email,
+                Email = email
             };
 
-            _context.Agents.Add(agent);
-            await _context.SaveChangesAsync();
+            IdentityResult createResult = await _userManager.CreateAsync(user, request.Password);
+
+            if (!createResult.Succeeded)
+            {
+                response.Errors.AddRange(createResult.Errors.Select(e => e.Description));
+                return response;
+            }
+
+            IdentityResult roleResult = await _userManager.AddToRolesAsync(user, new[] { Roles.User, Roles.Agent });
+
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                response.Errors.AddRange(roleResult.Errors.Select(e => e.Description));
+                return response;
+            }
+
+            Agent agent = new Agent
+            {
+                FirstName = Helpers.CapitalizeFirstLetter(request.FirstName),
+                LastName = Helpers.CapitalizeFirstLetter(request.LastName),
+                Phone = request.Phone,
+                AgencyName = request.AgencyName,
+                UserId = user.Id
+            };
+
+            try
+            {
+                _context.Agents.Add(agent);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                await _userManager.DeleteAsync(user);
+                response.Errors.Add(Messages.Agent.SaveFailedMessage);
+                return response;
+            }
+
+            response.Succeeded = true;
+            return response;
         }
     }
 }

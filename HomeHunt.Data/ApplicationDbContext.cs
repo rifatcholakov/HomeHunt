@@ -24,8 +24,14 @@ namespace HomeHunt.Data
                 .IsUnique();
 
             builder.Entity<Agent>()
-                .HasIndex(a => a.Email)
+                .HasIndex(a => a.UserId)
                 .IsUnique();
+
+            builder.Entity<Agent>()
+                .HasOne(a => a.User)
+                .WithOne()
+                .HasForeignKey<Agent>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Agent>()
                 .HasIndex(a => a.Phone)
@@ -44,8 +50,6 @@ namespace HomeHunt.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Location>().HasData(SeedData.GetLocations());
-            builder.Entity<Agent>().HasData(SeedData.GetAgents());
-            builder.Entity<Property>().HasData(SeedData.GetProperties());
         }
     }
 }

@@ -3,6 +3,8 @@ using HomeHunt.Common.Enums;
 
 namespace HomeHunt.Data
 {
+    public record DemoAgent(int Key, string Email, string FirstName, string LastName, string Phone, string AgencyName);
+
     public static class SeedData
     {
         public static Location[] GetLocations()
@@ -21,17 +23,17 @@ namespace HomeHunt.Data
             };
         }
 
-        public static Agent[] GetAgents()
+        public static DemoAgent[] GetDemoAgents()
         {
-            return new Agent[]
+            return new DemoAgent[]
             {
-                new Agent { Id = 1, FirstName = "Ivan", LastName = "Petrov", Email = "ivan.petrov@example.com", Phone = "+359888100001", AgencyName = "Sunrise Estates" },
-                new Agent { Id = 2, FirstName = "Maria", LastName = "Georgieva", Email = "maria.georgieva@example.com", Phone = "+359888100002", AgencyName = "Sunrise Estates" },
-                new Agent { Id = 3, FirstName = "Georgi", LastName = "Dimitrov", Email = "georgi.dimitrov@example.com", Phone = "+359888100003", AgencyName = "Balkan Homes" },
-                new Agent { Id = 4, FirstName = "Elena", LastName = "Stoyanova", Email = "elena.stoyanova@example.com", Phone = "+359888100004", AgencyName = "Balkan Homes" },
-                new Agent { Id = 5, FirstName = "Nikolay", LastName = "Ivanov", Email = "nikolay.ivanov@example.com", Phone = "+359888100005", AgencyName = "Black Sea Realty" },
-                new Agent { Id = 6, FirstName = "Desislava", LastName = "Koleva", Email = "desislava.koleva@example.com", Phone = "+359888100006", AgencyName = "Black Sea Realty" },
-                new Agent { Id = 7, FirstName = "Stefan", LastName = "Hristov", Email = "stefan.hristov@example.com", Phone = "+359888100007", AgencyName = "Rhodope Properties" }
+                new DemoAgent(1, "ivan.petrov@homehunt.com", "Ivan", "Petrov", "+359888100001", "Sunrise Estates"),
+                new DemoAgent(2, "maria.georgieva@homehunt.com", "Maria", "Georgieva", "+359888100002", "Sunrise Estates"),
+                new DemoAgent(3, "georgi.dimitrov@homehunt.com", "Georgi", "Dimitrov", "+359888100003", "Balkan Homes"),
+                new DemoAgent(4, "elena.stoyanova@homehunt.com", "Elena", "Stoyanova", "+359888100004", "Balkan Homes"),
+                new DemoAgent(5, "nikolay.ivanov@homehunt.com", "Nikolay", "Ivanov", "+359888100005", "Black Sea Realty"),
+                new DemoAgent(6, "desislava.koleva@homehunt.com", "Desislava", "Koleva", "+359888100006", "Black Sea Realty"),
+                new DemoAgent(7, "stefan.hristov@homehunt.com", "Stefan", "Hristov", "+359888100007", "Rhodope Properties")
             };
         }
 

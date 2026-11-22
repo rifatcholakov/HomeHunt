@@ -2,6 +2,12 @@ namespace HomeHunt.Common
 {
     public static class ValidationConstants
     {
+        public static class Account
+        {
+            public const int PasswordMinLength = 6;
+            public const int PasswordMaxLength = 100;
+        }
+
         public static class Property
         {
             public const int TitleMinLength = 5;

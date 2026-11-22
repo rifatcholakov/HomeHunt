@@ -4,7 +4,7 @@ namespace HomeHunt.Common
 {
     public static class Helpers
     {
-        public static string Normalize(string? value)
+        public static string NormalizeWhitespace(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -14,7 +14,7 @@ namespace HomeHunt.Common
             return Regex.Replace(value.Trim(), @"\s+", " ");
         }
 
-        public static string NormalizePhone(string? value)
+        public static string NormalizePhoneNumber(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -24,7 +24,7 @@ namespace HomeHunt.Common
             return Regex.Replace(value, @"\s", "");
         }
 
-        public static string Capitalize(string value)
+        public static string CapitalizeFirstLetter(string value)
         {
             if (string.IsNullOrEmpty(value))
             {

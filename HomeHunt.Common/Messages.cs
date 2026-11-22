@@ -5,6 +5,10 @@ namespace HomeHunt.Common
         public static class Account
         {
             public const string AdminCreateFailedMessage = "Could not create the admin account: ";
+            public const string DemoAccountCreateFailedMessage = "Could not create a demo account: ";
+
+            public const string PasswordRequiredMessage = "Password is required.";
+            public const string PasswordLengthMessage = "Password must be between {2} and {1} characters.";
         }
 
         public static class Agent
@@ -24,6 +28,8 @@ namespace HomeHunt.Common
             public const string PhoneTakenMessage = "An agent with this phone number already exists.";
             public const string AgencyNameRequiredMessage = "Agency name is required.";
             public const string AgencyNameLengthMessage = "Agency name must be between {2} and {1} characters.";
+            public const string SaveFailedMessage = "The agent could not be saved. Please check the details and try again.";
+
             public const string CreatedMessage = "The agent was created.";
             public const string UpdatedMessage = "The agent was updated.";
             public const string DeletedMessage = "The agent and all of their properties were deleted.";
