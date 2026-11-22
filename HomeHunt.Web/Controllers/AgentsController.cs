@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
 using HomeHunt.Service.Data.Agents.Response;
@@ -79,6 +80,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         public async Task<IActionResult> Edit(int id)
         {
             GetAgentForEditResponseData? agent = await _agentService.GetAgentForEditAsync(id);
@@ -101,6 +103,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, AgentFormViewModel model)
         {
@@ -141,6 +144,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         public async Task<IActionResult> Delete(int id)
         {
             GetAgentDetailsResponseData? agent = await _agentService.GetAgentDetailsAsync(id);
@@ -183,6 +187,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -197,11 +202,13 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         public IActionResult Create()
         {
             return View(new AgentCreateViewModel());
         }
 
+        [Authorize(Policy = Policies.CanManageAgents)]
         [HttpPost]
         public async Task<IActionResult> Create(AgentCreateViewModel model)
         {

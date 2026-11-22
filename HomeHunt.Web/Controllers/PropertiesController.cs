@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Response;
 using HomeHunt.Service.Data.Locations;
@@ -18,15 +19,18 @@ namespace HomeHunt.Controllers
         private readonly IPropertyService _propertyService;
         private readonly ILocationService _locationService;
         private readonly IAgentService _agentService;
+        private readonly IAuthorizationService _authorizationService;
 
         public PropertiesController(
             IPropertyService propertyService,
             ILocationService locationService,
-            IAgentService agentService)
+            IAgentService agentService,
+            IAuthorizationService authorizationService)
         {
             _propertyService = propertyService;
             _locationService = locationService;
             _agentService = agentService;
+            _authorizationService = authorizationService;
         }
 
         public async Task<IActionResult> Index(PropertySearchViewModel searchModel)
@@ -112,6 +116,20 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize]
+        public async Task<IActionResult> GetStartedListing()
+        {
+            AuthorizationResult result = await _authorizationService.AuthorizeAsync(User, Policies.CanManageProperties);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+
+            return RedirectToPage(Routes.UpgradeToAgentPage, new { area = Routes.IdentityArea });
+        }
+
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Create()
         {
             PropertyFormViewModel model = new PropertyFormViewModel();
@@ -120,6 +138,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         [HttpPost]
         public async Task<IActionResult> Create(PropertyFormViewModel model)
         {
@@ -159,6 +178,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Edit(int id)
         {
             GetPropertyForEditResponseData? property = await _propertyService.GetPropertyForEditAsync(id);
@@ -190,6 +210,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, PropertyFormViewModel model)
         {
@@ -239,6 +260,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Delete(int id)
         {
             GetPropertyDetailsResponseData? property = await _propertyService.GetPropertyDetailsAsync(id);
@@ -275,6 +297,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageProperties)]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
@@ -75,11 +76,13 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public IActionResult Create()
         {
             return View(new LocationFormViewModel());
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         [HttpPost]
         public async Task<IActionResult> Create(LocationFormViewModel model)
         {
@@ -113,6 +116,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Delete(int id)
         {
             GetLocationDetailsResponseData? location = await _locationService.GetLocationDetailsAsync(id);
@@ -153,6 +157,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -167,6 +172,7 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         public async Task<IActionResult> Edit(int id)
         {
             GetLocationForEditResponseData? location = await _locationService.GetLocationForEditAsync(id);
@@ -187,6 +193,7 @@ namespace HomeHunt.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Policies.CanManageLocations)]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, LocationFormViewModel model)
         {

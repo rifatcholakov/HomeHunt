@@ -6,7 +6,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h2 mb-0">Locations</h1>
-    <a class="btn btn-primary" asp-action="Create">Add Location</a>
+    <a class="btn btn-primary" asp-policy="@Policies.CanManageLocations" asp-action="Create">Add Location</a>
 </div>
 
 <div class="table-responsive">
@@ -30,8 +30,8 @@
                     <td><span class="badge bg-primary">@location.PropertyCount</span></td>
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@location.Id">Details</a>
-                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@location.Id">Edit</a>
-                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@location.Id">Delete</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-policy="@Policies.CanManageLocations" asp-action="Edit" asp-route-id="@location.Id">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger" asp-policy="@Policies.CanManageLocations" asp-action="Delete" asp-route-id="@location.Id">Delete</a>
                     </td>
                 </tr>
             }

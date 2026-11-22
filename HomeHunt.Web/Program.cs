@@ -1,3 +1,4 @@
+using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Locations;
@@ -24,6 +25,13 @@ namespace HomeHunt
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.CanManageProperties, policy => policy.RequireRole(Roles.Administrator, Roles.Agent));
+                options.AddPolicy(Policies.CanManageLocations, policy => policy.RequireRole(Roles.Administrator));
+                options.AddPolicy(Policies.CanManageAgents, policy => policy.RequireRole(Roles.Administrator));
+            });
+
             builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
