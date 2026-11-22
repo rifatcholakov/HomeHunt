@@ -9,6 +9,9 @@ namespace HomeHunt.Common
 
             public const string PasswordRequiredMessage = "Password is required.";
             public const string PasswordLengthMessage = "Password must be between {2} and {1} characters.";
+            public const string ConfirmPasswordRequiredMessage = "Please confirm your password.";
+            public const string ConfirmPasswordMismatchMessage = "The password and confirmation password do not match.";
+            public const string EmailTakenMessage = "An account with this email already exists.";
         }
 
         public static class Agent
@@ -26,7 +29,6 @@ namespace HomeHunt.Common
             public const string PhoneFormatMessage = "Phone must start with + and contain 7 to 15 digits.";
             public const string PhoneMaxLengthMessage = "Phone can be at most {1} characters.";
             public const string PhoneTakenMessage = "An agent with this phone number already exists.";
-            public const string AgencyNameRequiredMessage = "Agency name is required.";
             public const string AgencyNameLengthMessage = "Agency name must be between {2} and {1} characters.";
             public const string SaveFailedMessage = "The agent could not be saved. Please check the details and try again.";
 

@@ -27,11 +27,10 @@ namespace HomeHunt.Data.Models
         [StringLength(PhoneMaxLength)]
         public string Phone { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = AgencyNameRequiredMessage)]
         [StringLength(AgencyNameMaxLength, MinimumLength = AgencyNameMinLength,
             ErrorMessage = AgencyNameLengthMessage)]
         [Display(Name = "Agency")]
-        public string AgencyName { get; set; } = string.Empty;
+        public string? AgencyName { get; set; }
 
         public string UserId { get; set; } = string.Empty;
 

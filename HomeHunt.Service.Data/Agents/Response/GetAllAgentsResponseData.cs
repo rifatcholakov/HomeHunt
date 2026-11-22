@@ -8,7 +8,7 @@ namespace HomeHunt.Service.Data.Agents.Response
 
         public string LastName { get; set; } = string.Empty;
 
-        public string AgencyName { get; set; } = string.Empty;
+        public string? AgencyName { get; set; }
 
         public string Email { get; set; } = string.Empty;
 

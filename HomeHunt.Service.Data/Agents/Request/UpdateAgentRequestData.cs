@@ -8,6 +8,6 @@ namespace HomeHunt.Service.Data.Agents.Request
 
         public string Phone { get; set; } = string.Empty;
 
-        public string AgencyName { get; set; } = string.Empty;
+        public string? AgencyName { get; set; }
     }
 }

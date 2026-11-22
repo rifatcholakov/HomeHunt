@@ -11,7 +11,7 @@ namespace HomeHunt.ViewModels
         private string _lastName = string.Empty;
         private string _email = string.Empty;
         private string _phone = string.Empty;
-        private string _agencyName = string.Empty;
+        private string? _agencyName;
 
         public int Id { get; set; }
 
@@ -77,11 +77,10 @@ namespace HomeHunt.ViewModels
             }
         }
 
-        [Required(ErrorMessage = AgencyNameRequiredMessage)]
         [StringLength(AgencyNameMaxLength, MinimumLength = AgencyNameMinLength,
             ErrorMessage = AgencyNameLengthMessage)]
         [Display(Name = "Agency")]
-        public string AgencyName
+        public string? AgencyName
         {
             get
             {
@@ -89,7 +88,8 @@ namespace HomeHunt.ViewModels
             }
             set
             {
-                _agencyName = Helpers.NormalizeWhitespace(value);
+                string normalized = Helpers.NormalizeWhitespace(value);
+                _agencyName = normalized.Length == 0 ? null : normalized;
             }
         }
     }
