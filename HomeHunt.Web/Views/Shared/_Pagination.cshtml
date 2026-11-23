@@ -1,0 +1,36 @@
+@model PaginationViewModel
+
+@if (Model.TotalPages > 1)
+{
+    Dictionary<string, string> routeValues = ViewContext.HttpContext.Request.Query
+        .Where(q => q.Key != "page")
+        .ToDictionary(q => q.Key, q => q.Value.ToString());
+
+    int previousPage = 0;
+
+    <nav class="mt-4" aria-label="Pagination">
+        <ul class="pagination justify-content-center flex-wrap">
+            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-all-route-data="routeValues" asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
+            </li>
+
+            @foreach (int pageNumber in Model.VisiblePages)
+            {
+                if (pageNumber - previousPage > 1)
+                {
+                    <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                }
+
+                <li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-all-route-data="routeValues" asp-route-page="@pageNumber">@pageNumber</a>
+                </li>
+
+                previousPage = pageNumber;
+            }
+
+            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-all-route-data="routeValues" asp-route-page="@(Model.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

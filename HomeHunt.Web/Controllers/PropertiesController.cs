@@ -46,7 +46,7 @@ namespace HomeHunt.Controllers
 
             if (ModelState.IsValid)
             {
-                IEnumerable<GetPropertiesResponseData> response = await _propertyService
+                SearchPropertiesResponseData response = await _propertyService
                     .SearchPropertiesAsync(new SearchPropertiesRequestData
                     {
                         City = searchModel.City,
@@ -56,10 +56,15 @@ namespace HomeHunt.Controllers
                         MaxPrice = searchModel.MaxPrice,
                         MinBedrooms = searchModel.MinBedrooms,
                         MinArea = searchModel.MinArea,
-                        SortBy = searchModel.SortBy
+                        SortBy = searchModel.SortBy,
+                        Page = searchModel.Page
                     });
 
-                searchModel.Properties = response
+                searchModel.Page = response.Page;
+                searchModel.TotalPages = response.TotalPages;
+                searchModel.TotalCount = response.TotalCount;
+
+                searchModel.Properties = response.Items
                     .Select(p => new PropertyListViewModel
                     {
                         Id = p.Id,

@@ -73,9 +73,9 @@
 
 @if (ViewData.ModelState.IsValid)
 {
-    <p class="text-muted">@Model.Properties.Count properties found</p>
+    <p class="text-muted">@Model.TotalCount properties found</p>
 
-    @if (Model.Properties.Count == 0)
+    @if (Model.TotalCount == 0)
     {
         <p>No properties match your search. <a asp-action="Index">Clear filters</a></p>
     }
@@ -87,5 +87,7 @@
                 <partial name="_PropertyCard" model="property" />
             }
         </div>
+
+        <partial name="_Pagination" model="@(new PaginationViewModel { CurrentPage = Model.Page, TotalPages = Model.TotalPages })" />
     }
 }

@@ -36,6 +36,12 @@ namespace HomeHunt.ViewModels
         [Display(Name = "Sort by")]
         public string SortBy { get; set; } = SortOptions.Newest;
 
+        public int Page { get; set; } = 1;
+
+        public int TotalPages { get; set; } = 1;
+
+        public int TotalCount { get; set; }
+
         public List<string> Cities { get; set; } = new List<string>();
 
         public List<PropertyListViewModel> Properties { get; set; } = new List<PropertyListViewModel>();

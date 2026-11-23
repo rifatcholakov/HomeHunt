@@ -18,7 +18,7 @@ namespace HomeHunt.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<GetPropertiesResponseData>> SearchPropertiesAsync(SearchPropertiesRequestData request)
+        public async Task<SearchPropertiesResponseData> SearchPropertiesAsync(SearchPropertiesRequestData request)
         {
             IQueryable<Property> query = _context.Properties.AsNoTracking();
 
@@ -57,24 +57,34 @@ namespace HomeHunt.Services
                 query = query.Where(p => p.Area >= request.MinArea.Value);
             }
 
+            int totalCount = await query.CountAsync();
+            int pageSize = Math.Max(1, request.PageSize);
+            int totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+            int page = Math.Min(Math.Max(1, request.Page), totalPages);
+
+            IOrderedQueryable<Property> orderedQuery;
+
             if (request.SortBy == SortOptions.PriceAsc)
             {
-                query = query.OrderBy(p => p.Price);
+                orderedQuery = query.OrderBy(p => p.Price);
             }
             else if (request.SortBy == SortOptions.PriceDesc)
             {
-                query = query.OrderByDescending(p => p.Price);
+                orderedQuery = query.OrderByDescending(p => p.Price);
             }
             else if (request.SortBy == SortOptions.Area)
             {
-                query = query.OrderByDescending(p => p.Area);
+                orderedQuery = query.OrderByDescending(p => p.Area);
             }
             else
             {
-                query = query.OrderByDescending(p => p.CreatedOn);
+                orderedQuery = query.OrderByDescending(p => p.CreatedOn);
             }
 
-            return await query
+            List<GetPropertiesResponseData> items = await orderedQuery
+                .ThenBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(p => new GetPropertiesResponseData
                 {
                     Id = p.Id,
@@ -92,6 +102,14 @@ namespace HomeHunt.Services
                     OwnerUserId = p.Agent.UserId
                 })
                 .ToListAsync();
+
+            return new SearchPropertiesResponseData
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<IEnumerable<GetPropertiesResponseData>> GetRecentPropertiesAsync(int count)
