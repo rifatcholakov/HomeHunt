@@ -9,6 +9,9 @@
     <div class="card h-100">
         <img src="@imageUrl" class="card-img-top property-card-image" alt="@Model.Title"
              onerror="this.onerror=null; this.src='@defaultImage';" />
+        <div class="favorite-overlay">
+            <vc:favorite-button property-id="@Model.Id" />
+        </div>
         <div class="card-body">
             <div class="mb-2">
                 <span class="badge bg-secondary">@Model.PropertyType</span>

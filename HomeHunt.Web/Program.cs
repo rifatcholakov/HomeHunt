@@ -2,6 +2,7 @@ using HomeHunt.Authorization;
 using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Service.Data.Agents;
+using HomeHunt.Service.Data.Favorites;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Properties;
 using HomeHunt.Services;
@@ -45,6 +46,7 @@ namespace HomeHunt
             builder.Services.AddScoped<IPropertyService, PropertyService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IAgentService, AgentService>();
+            builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
             var app = builder.Build();
 

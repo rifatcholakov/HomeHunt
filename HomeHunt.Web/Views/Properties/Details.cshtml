@@ -23,7 +23,10 @@
             <partial name="_StatusBadge" model="Model.Status" />
         </div>
 
-        <h1 class="h2">@Model.Title</h1>
+        <div class="d-flex justify-content-between align-items-start">
+            <h1 class="h2">@Model.Title</h1>
+            <vc:favorite-button property-id="@Model.Id" />
+        </div>
         <p class="text-muted">@Model.Neighborhood, @Model.City</p>
 
         <p class="display-6 text-primary mb-4">

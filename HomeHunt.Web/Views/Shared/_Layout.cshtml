@@ -1,38 +1,55 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string? currentArea = ViewContext.RouteData.Values["area"]?.ToString();
+    string? currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    string? currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    string NavActive(string controller, string? action = null)
+    {
+        bool isActive = string.IsNullOrEmpty(currentArea)
+            && currentController == controller
+            && (action == null || currentAction == action);
+
+        return isActive ? " active" : "";
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HomeHunt</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/properties.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/favorites.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HomeHunt.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top site-navbar mb-4">
+            <div class="container">
                 <a class="navbar-brand fw-bold fs-4" asp-area="" asp-controller="Home" asp-action="Index">Home<span class="text-primary">Hunt</span></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link@(NavActive("Home", "Index"))" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Properties" asp-action="Index">All Properties</a>
+                            <a class="nav-link@(NavActive("Properties"))" asp-area="" asp-controller="Properties" asp-action="Index">All Properties</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Locations" asp-action="Index">Locations</a>
+                            <a class="nav-link@(NavActive("Locations"))" asp-area="" asp-controller="Locations" asp-action="Index">Locations</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Agents" asp-action="Index">Agents</a>
+                            <a class="nav-link@(NavActive("Agents"))" asp-area="" asp-controller="Agents" asp-action="Index">Agents</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                            <a class="nav-link@(NavActive("Home", "About"))" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -62,6 +79,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/favorites.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

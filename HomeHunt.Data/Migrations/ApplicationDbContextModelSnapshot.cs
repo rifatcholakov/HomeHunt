@@ -64,6 +64,24 @@ namespace HomeHunt.Data.Migrations
                     b.ToTable("Agents");
                 });
 
+            modelBuilder.Entity("HomeHunt.Data.Models.FavoriteProperty", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "PropertyId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("HomeHunt.Data.Models.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -429,6 +447,25 @@ namespace HomeHunt.Data.Migrations
                         .HasForeignKey("HomeHunt.Data.Models.Agent", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeHunt.Data.Models.FavoriteProperty", b =>
+                {
+                    b.HasOne("HomeHunt.Data.Models.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
 
                     b.Navigation("User");
                 });

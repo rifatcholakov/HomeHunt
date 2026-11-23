@@ -1,0 +1,22 @@
+@model FavoriteButtonViewModel
+
+@if (!Model.IsAuthenticated)
+{
+    <a class="btn btn-light btn-sm favorite-button" asp-area="Identity" asp-page="/Account/Login"
+       asp-route-returnUrl="@Model.ReturnUrl" title="Log in to save favorites" aria-label="Log in to save favorites">&#9825;</a>
+}
+else
+{
+    <form class="favorite-form" method="post"
+          action="@Url.Action(Model.IsFavorite ? "Remove" : "Add", "Favorites")"
+          data-add-url="@Url.Action("Add", "Favorites")"
+          data-remove-url="@Url.Action("Remove", "Favorites")"
+          data-is-favorite="@Model.IsFavorite.ToString().ToLower()">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="propertyId" value="@Model.PropertyId" />
+        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+        <button type="submit" class="btn btn-light btn-sm favorite-button@(Model.IsFavorite ? " text-danger" : "")"
+                title="@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")"
+                aria-label="@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")">@Html.Raw(Model.IsFavorite ? "&hearts;" : "&#9825;")</button>
+    </form>
+}
