@@ -238,5 +238,58 @@ namespace HomeHunt.Services
             response.Succeeded = true;
             return response;
         }
+
+        public async Task<CreateAgentResponseData> UpgradeToAgentAsync(UpgradeToAgentRequestData request)
+        {
+            CreateAgentResponseData response = new CreateAgentResponseData();
+
+            IdentityUser? user = await _userManager.FindByIdAsync(request.UserId);
+
+            if (user == null)
+            {
+                response.Errors.Add(Messages.Agent.SaveFailedMessage);
+                return response;
+            }
+
+            bool alreadyAgent = await _context.Agents.AnyAsync(a => a.UserId == user.Id);
+
+            if (alreadyAgent)
+            {
+                response.Errors.Add(Messages.Agent.AlreadyAgentMessage);
+                return response;
+            }
+
+            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, Roles.Agent);
+
+            if (!roleResult.Succeeded)
+            {
+                response.Errors.AddRange(roleResult.Errors.Select(e => e.Description));
+                return response;
+            }
+
+            Agent agent = new Agent
+            {
+                FirstName = Helpers.CapitalizeFirstLetter(request.FirstName),
+                LastName = Helpers.CapitalizeFirstLetter(request.LastName),
+                Phone = request.Phone,
+                AgencyName = request.AgencyName,
+                UserId = user.Id
+            };
+
+            try
+            {
+                _context.Agents.Add(agent);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                await _userManager.RemoveFromRoleAsync(user, Roles.Agent);
+                response.Errors.Add(Messages.Agent.SaveFailedMessage);
+                return response;
+            }
+
+            response.Succeeded = true;
+            return response;
+        }
     }
 }

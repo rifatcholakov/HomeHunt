@@ -12,6 +12,7 @@ namespace HomeHunt.Common
             public const string ConfirmPasswordRequiredMessage = "Please confirm your password.";
             public const string ConfirmPasswordMismatchMessage = "The password and confirmation password do not match.";
             public const string EmailTakenMessage = "An account with this email already exists.";
+            public const string UpgradedToAgentMessage = "Your account is now an agent account. You can add your first property.";
         }
 
         public static class Agent
@@ -31,6 +32,7 @@ namespace HomeHunt.Common
             public const string PhoneTakenMessage = "An agent with this phone number already exists.";
             public const string AgencyNameLengthMessage = "Agency name must be between {2} and {1} characters.";
             public const string SaveFailedMessage = "The agent could not be saved. Please check the details and try again.";
+            public const string AlreadyAgentMessage = "This account is already an agent account.";
 
             public const string CreatedMessage = "The agent was created.";
             public const string UpdatedMessage = "The agent was updated.";
