@@ -62,7 +62,8 @@ namespace HomeHunt.Services
                             PropertyType = p.PropertyType,
                             ListingType = p.ListingType,
                             Status = p.Status,
-                            ImageUrl = p.ImageUrl
+                            ImageUrl = p.ImageUrl,
+                            OwnerUserId = p.Agent.UserId
                         })
                         .ToList()
                 })

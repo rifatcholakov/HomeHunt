@@ -13,6 +13,8 @@ namespace HomeHunt.Service.Data.Agents
 
         Task<bool> AgentExistsAsync(int id);
 
+        Task<int?> GetAgentIdByUserIdAsync(string userId);
+
         Task<IEnumerable<GetAgentOptionsResponseData>> GetAgentOptionsAsync();
 
         Task<bool> EmailExistsAsync(string email);

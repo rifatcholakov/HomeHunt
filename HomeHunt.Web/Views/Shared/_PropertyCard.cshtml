@@ -26,7 +26,7 @@
         </div>
         <div class="card-footer bg-white border-0 pb-3">
             <a class="btn btn-primary w-100 mb-2" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.Id">View Details</a>
-            <div class="d-flex gap-2" asp-policy="@Policies.CanManageProperties">
+            <div class="d-flex gap-2" asp-can-modify-property="@Model.OwnerUserId">
                 <a class="btn btn-sm btn-outline-secondary flex-fill" asp-controller="Properties" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
                 <a class="btn btn-sm btn-outline-danger flex-fill" asp-controller="Properties" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
             </div>

@@ -68,7 +68,8 @@ namespace HomeHunt.Controllers
                         PropertyType = p.PropertyType,
                         ListingType = p.ListingType,
                         Status = p.Status,
-                        ImageUrl = p.ImageUrl
+                        ImageUrl = p.ImageUrl,
+                        OwnerUserId = p.OwnerUserId
                     })
                     .ToList()
             };
@@ -149,7 +150,8 @@ namespace HomeHunt.Controllers
                         PropertyType = p.PropertyType,
                         ListingType = p.ListingType,
                         Status = p.Status,
-                        ImageUrl = p.ImageUrl
+                        ImageUrl = p.ImageUrl,
+                        OwnerUserId = p.OwnerUserId
                     })
                     .ToList()
             };

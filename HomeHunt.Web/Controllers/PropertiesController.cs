@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Response;
@@ -72,7 +73,8 @@ namespace HomeHunt.Controllers
                         PropertyType = p.PropertyType,
                         ListingType = p.ListingType,
                         Status = p.Status,
-                        ImageUrl = p.ImageUrl
+                        ImageUrl = p.ImageUrl,
+                        OwnerUserId = p.OwnerUserId
                     })
                     .ToList();
             }
@@ -107,6 +109,7 @@ namespace HomeHunt.Controllers
                 City = property.City,
                 Neighborhood = property.Neighborhood,
                 AgentId = property.AgentId,
+                OwnerUserId = property.OwnerUserId,
                 AgentFirstName = property.AgentFirstName,
                 AgentLastName = property.AgentLastName,
                 AgentEmail = property.AgentEmail,
@@ -133,6 +136,12 @@ namespace HomeHunt.Controllers
         public async Task<IActionResult> Create()
         {
             PropertyFormViewModel model = new PropertyFormViewModel();
+
+            if (!await AssignOwnAgentAsync(model))
+            {
+                return Forbid();
+            }
+
             await PopulateLocationAndAgentOptionsAsync(model);
 
             return View(model);
@@ -142,6 +151,11 @@ namespace HomeHunt.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PropertyFormViewModel model)
         {
+            if (!await AssignOwnAgentAsync(model))
+            {
+                return Forbid();
+            }
+
             if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
             {
                 ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
@@ -181,6 +195,13 @@ namespace HomeHunt.Controllers
         [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Edit(int id)
         {
+            IActionResult? denied = await CheckCanModifyAsync(id);
+
+            if (denied != null)
+            {
+                return denied;
+            }
+
             GetPropertyForEditResponseData? property = await _propertyService.GetPropertyForEditAsync(id);
 
             if (property == null)
@@ -217,6 +238,18 @@ namespace HomeHunt.Controllers
             if (id != model.Id)
             {
                 return NotFound();
+            }
+
+            IActionResult? denied = await CheckCanModifyAsync(id);
+
+            if (denied != null)
+            {
+                return denied;
+            }
+
+            if (!await AssignOwnAgentAsync(model))
+            {
+                return Forbid();
             }
 
             if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
@@ -263,6 +296,13 @@ namespace HomeHunt.Controllers
         [Authorize(Policy = Policies.CanManageProperties)]
         public async Task<IActionResult> Delete(int id)
         {
+            IActionResult? denied = await CheckCanModifyAsync(id);
+
+            if (denied != null)
+            {
+                return denied;
+            }
+
             GetPropertyDetailsResponseData? property = await _propertyService.GetPropertyDetailsAsync(id);
 
             if (property == null)
@@ -288,6 +328,7 @@ namespace HomeHunt.Controllers
                 City = property.City,
                 Neighborhood = property.Neighborhood,
                 AgentId = property.AgentId,
+                OwnerUserId = property.OwnerUserId,
                 AgentFirstName = property.AgentFirstName,
                 AgentLastName = property.AgentLastName,
                 AgentEmail = property.AgentEmail,
@@ -301,6 +342,13 @@ namespace HomeHunt.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            IActionResult? denied = await CheckCanModifyAsync(id);
+
+            if (denied != null)
+            {
+                return denied;
+            }
+
             bool deleted = await _propertyService.DeletePropertyAsync(id);
 
             if (!deleted)
@@ -312,10 +360,48 @@ namespace HomeHunt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private async Task<IActionResult?> CheckCanModifyAsync(int propertyId)
+        {
+            string? ownerUserId = await _propertyService.GetOwnerUserIdAsync(propertyId);
+
+            if (ownerUserId == null)
+            {
+                return NotFound();
+            }
+
+            AuthorizationResult result = await _authorizationService.AuthorizeAsync(User, ownerUserId, Policies.CanModifyProperty);
+
+            return result.Succeeded ? null : Forbid();
+        }
+
+        private async Task<bool> AssignOwnAgentAsync(PropertyFormViewModel model)
+        {
+            if (User.IsInRole(Roles.Administrator))
+            {
+                return true;
+            }
+
+            int? ownAgentId = await _agentService.GetAgentIdByUserIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (ownAgentId == null)
+            {
+                return false;
+            }
+
+            model.AgentId = ownAgentId;
+            ModelState.Remove(nameof(model.AgentId));
+
+            return true;
+        }
+
         private async Task PopulateLocationAndAgentOptionsAsync(PropertyFormViewModel model)
         {
+            model.CanChooseAgent = User.IsInRole(Roles.Administrator);
+
             IEnumerable<GetLocationOptionsResponseData> locations = await _locationService.GetLocationOptionsAsync();
-            IEnumerable<GetAgentOptionsResponseData> agents = await _agentService.GetAgentOptionsAsync();
+            IEnumerable<GetAgentOptionsResponseData> agents = model.CanChooseAgent
+                ? await _agentService.GetAgentOptionsAsync()
+                : Enumerable.Empty<GetAgentOptionsResponseData>();
 
             model.Locations = locations
                 .Select(l => new SelectListItem

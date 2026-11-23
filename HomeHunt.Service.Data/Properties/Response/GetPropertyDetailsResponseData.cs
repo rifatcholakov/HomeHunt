@@ -36,6 +36,8 @@ namespace HomeHunt.Service.Data.Properties.Response
 
         public int AgentId { get; set; }
 
+        public string OwnerUserId { get; set; } = string.Empty;
+
         public string AgentFirstName { get; set; } = string.Empty;
 
         public string AgentLastName { get; set; } = string.Empty;

@@ -27,5 +27,7 @@ namespace HomeHunt.ViewModels
         public PropertyStatus Status { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        public string OwnerUserId { get; set; } = string.Empty;
     }
 }

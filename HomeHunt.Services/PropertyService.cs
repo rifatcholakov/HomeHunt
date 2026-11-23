@@ -88,7 +88,8 @@ namespace HomeHunt.Services
                     PropertyType = p.PropertyType,
                     ListingType = p.ListingType,
                     Status = p.Status,
-                    ImageUrl = p.ImageUrl
+                    ImageUrl = p.ImageUrl,
+                    OwnerUserId = p.Agent.UserId
                 })
                 .ToListAsync();
         }
@@ -112,7 +113,8 @@ namespace HomeHunt.Services
                     PropertyType = p.PropertyType,
                     ListingType = p.ListingType,
                     Status = p.Status,
-                    ImageUrl = p.ImageUrl
+                    ImageUrl = p.ImageUrl,
+                    OwnerUserId = p.Agent.UserId
                 })
                 .ToListAsync();
         }
@@ -222,6 +224,15 @@ namespace HomeHunt.Services
             return true;
         }
 
+        public async Task<string?> GetOwnerUserIdAsync(int propertyId)
+        {
+            return await _context.Properties
+                .AsNoTracking()
+                .Where(p => p.Id == propertyId)
+                .Select(p => p.Agent.UserId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<GetPropertyDetailsResponseData?> GetPropertyDetailsAsync(int id)
         {
             return await _context.Properties
@@ -245,6 +256,7 @@ namespace HomeHunt.Services
                     City = p.Location.City,
                     Neighborhood = p.Location.Neighborhood,
                     AgentId = p.AgentId,
+                    OwnerUserId = p.Agent.UserId,
                     AgentFirstName = p.Agent.FirstName,
                     AgentLastName = p.Agent.LastName,
                     AgentEmail = p.Agent.User.Email!,

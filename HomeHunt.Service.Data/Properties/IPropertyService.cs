@@ -19,6 +19,8 @@ namespace HomeHunt.Service.Data.Properties
 
         Task<GetPropertyForEditResponseData?> GetPropertyForEditAsync(int id);
 
+        Task<string?> GetOwnerUserIdAsync(int propertyId);
+
         Task CreatePropertyAsync(CreatePropertyRequestData request);
 
         Task<bool> UpdatePropertyAsync(int id, UpdatePropertyRequestData request);

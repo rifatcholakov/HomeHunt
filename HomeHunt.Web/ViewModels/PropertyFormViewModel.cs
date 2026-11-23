@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using HomeHunt.Common;
 using HomeHunt.Common.Enums;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static HomeHunt.Common.Messages.Property;
@@ -98,5 +99,9 @@ namespace HomeHunt.ViewModels
         public List<SelectListItem> Locations { get; set; } = new List<SelectListItem>();
 
         public List<SelectListItem> Agents { get; set; } = new List<SelectListItem>();
+
+        [BindNever]
+        [ValidateNever]
+        public bool CanChooseAgent { get; set; }
     }
 }

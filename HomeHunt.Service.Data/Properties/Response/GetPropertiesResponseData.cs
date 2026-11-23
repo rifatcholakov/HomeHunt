@@ -27,5 +27,7 @@ namespace HomeHunt.Service.Data.Properties.Response
         public PropertyStatus Status { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        public string OwnerUserId { get; set; } = string.Empty;
     }
 }

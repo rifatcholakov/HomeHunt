@@ -69,7 +69,8 @@ namespace HomeHunt.Services
                             PropertyType = p.PropertyType,
                             ListingType = p.ListingType,
                             Status = p.Status,
-                            ImageUrl = p.ImageUrl
+                            ImageUrl = p.ImageUrl,
+                            OwnerUserId = p.Agent.UserId
                         })
                         .ToList()
                 })
@@ -113,6 +114,15 @@ namespace HomeHunt.Services
         {
             return await _context.Agents
                 .AnyAsync(a => a.Id == id);
+        }
+
+        public async Task<int?> GetAgentIdByUserIdAsync(string userId)
+        {
+            return await _context.Agents
+                .AsNoTracking()
+                .Where(a => a.UserId == userId)
+                .Select(a => (int?)a.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<GetAgentOptionsResponseData>> GetAgentOptionsAsync()
