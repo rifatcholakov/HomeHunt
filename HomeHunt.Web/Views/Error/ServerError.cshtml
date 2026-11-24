@@ -1,0 +1,19 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<div class="text-center py-5">
+    <p class="display-1 fw-bold text-danger mb-0">@Model.StatusCode</p>
+    <h1 class="h3 mb-3">Something went wrong</h1>
+    <p class="text-muted mb-4">
+        We couldn't complete your request. Please try again in a moment.
+    </p>
+    <a class="btn btn-primary me-2" asp-controller="Home" asp-action="Index">Back to home</a>
+    <a class="btn btn-outline-primary" href="javascript:history.back()">Go back</a>
+
+    @if (Model.ShowRequestId)
+    {
+        <p class="small text-muted mt-4 mb-0">Request ID: <code>@Model.RequestId</code></p>
+    }
+</div>

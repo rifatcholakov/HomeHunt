@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using HomeHunt.Models;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Response;
 using HomeHunt.Service.Data.Properties;
@@ -67,12 +65,6 @@ namespace HomeHunt.Controllers
         public IActionResult About()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
