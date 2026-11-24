@@ -1,4 +1,4 @@
-@model List<AgentListViewModel>
+@model PagedViewModel<AgentListViewModel>
 
 @{
     ViewData["Title"] = "Agents";
@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (AgentListViewModel agent in Model)
+            @foreach (AgentListViewModel agent in Model.Items)
             {
                 <tr>
                     <td>@agent.FirstName @agent.LastName</td>
@@ -40,3 +40,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_Pagination" model="Model.Pagination" />

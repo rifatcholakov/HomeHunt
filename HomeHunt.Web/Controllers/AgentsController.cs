@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
 using HomeHunt.Service.Data.Agents.Response;
@@ -18,11 +19,11 @@ namespace HomeHunt.Controllers
             _agentService = agentService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            IEnumerable<GetAllAgentsResponseData> response = await _agentService.GetAllAgentsAsync();
+            PagedResponseData<GetAllAgentsResponseData> response = await _agentService.GetAllAgentsAsync(page, DisplayConstants.TablePageSize);
 
-            List<AgentListViewModel> agents = response
+            List<AgentListViewModel> agents = response.Items
                 .Select(a => new AgentListViewModel
                 {
                     Id = a.Id,
@@ -35,7 +36,11 @@ namespace HomeHunt.Controllers
                 })
                 .ToList();
 
-            return View(agents);
+            return View(new PagedViewModel<AgentListViewModel>
+            {
+                Items = agents,
+                Pagination = new PaginationViewModel { CurrentPage = response.Page, TotalPages = response.TotalPages }
+            });
         }
 
         public async Task<IActionResult> Details(int id)

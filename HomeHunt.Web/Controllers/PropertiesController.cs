@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Response;
 using HomeHunt.Service.Data.Locations;
@@ -46,7 +47,7 @@ namespace HomeHunt.Controllers
 
             if (ModelState.IsValid)
             {
-                SearchPropertiesResponseData response = await _propertyService
+                PagedResponseData<GetPropertiesResponseData> response = await _propertyService
                     .SearchPropertiesAsync(new SearchPropertiesRequestData
                     {
                         City = searchModel.City,

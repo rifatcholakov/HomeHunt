@@ -5,7 +5,7 @@ namespace HomeHunt.Service.Data.Agents
 {
     public interface IAgentService
     {
-        Task<IEnumerable<GetAllAgentsResponseData>> GetAllAgentsAsync();
+        Task<PagedResponseData<GetAllAgentsResponseData>> GetAllAgentsAsync(int page, int pageSize);
 
         Task<GetAgentDetailsResponseData?> GetAgentDetailsAsync(int id);
 

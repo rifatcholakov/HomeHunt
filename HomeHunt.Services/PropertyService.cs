@@ -6,6 +6,7 @@ using HomeHunt.Service.Data.Properties;
 using HomeHunt.Service.Data.Properties.Request;
 using HomeHunt.Service.Data.Properties.Response;
 using HomeHunt.Common;
+using HomeHunt.Service.Data;
 
 namespace HomeHunt.Services
 {
@@ -18,7 +19,7 @@ namespace HomeHunt.Services
             _context = context;
         }
 
-        public async Task<SearchPropertiesResponseData> SearchPropertiesAsync(SearchPropertiesRequestData request)
+        public async Task<PagedResponseData<GetPropertiesResponseData>> SearchPropertiesAsync(SearchPropertiesRequestData request)
         {
             IQueryable<Property> query = _context.Properties.AsNoTracking();
 
@@ -57,11 +58,6 @@ namespace HomeHunt.Services
                 query = query.Where(p => p.Area >= request.MinArea.Value);
             }
 
-            int totalCount = await query.CountAsync();
-            int pageSize = Math.Max(1, request.PageSize);
-            int totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
-            int page = Math.Min(Math.Max(1, request.Page), totalPages);
-
             IOrderedQueryable<Property> orderedQuery;
 
             if (request.SortBy == SortOptions.PriceAsc)
@@ -81,10 +77,8 @@ namespace HomeHunt.Services
                 orderedQuery = query.OrderByDescending(p => p.CreatedOn);
             }
 
-            List<GetPropertiesResponseData> items = await orderedQuery
+            return await orderedQuery
                 .ThenBy(p => p.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .Select(p => new GetPropertiesResponseData
                 {
                     Id = p.Id,
@@ -101,15 +95,7 @@ namespace HomeHunt.Services
                     ImageUrl = p.ImageUrl,
                     OwnerUserId = p.Agent.UserId
                 })
-                .ToListAsync();
-
-            return new SearchPropertiesResponseData
-            {
-                Items = items,
-                TotalCount = totalCount,
-                Page = page,
-                TotalPages = totalPages
-            };
+                .ToPagedAsync(request.Page, request.PageSize);
         }
 
         public async Task<IEnumerable<GetPropertiesResponseData>> GetRecentPropertiesAsync(int count)

@@ -4,6 +4,7 @@ using HomeHunt.Data.Models;
 using HomeHunt.Common.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
 using HomeHunt.Service.Data.Agents.Response;
@@ -22,7 +23,7 @@ namespace HomeHunt.Services
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<GetAllAgentsResponseData>> GetAllAgentsAsync()
+        public async Task<PagedResponseData<GetAllAgentsResponseData>> GetAllAgentsAsync(int page, int pageSize)
         {
             return await _context.Agents
                 .AsNoTracking()
@@ -38,7 +39,7 @@ namespace HomeHunt.Services
                     Phone = a.Phone,
                     PropertyCount = a.Properties.Count
                 })
-                .ToListAsync();
+                .ToPagedAsync(page, pageSize);
         }
 
         public async Task<GetAgentDetailsResponseData?> GetAgentDetailsAsync(int id)

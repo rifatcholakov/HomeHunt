@@ -1,4 +1,4 @@
-@model List<LocationListViewModel>
+@model PagedViewModel<LocationListViewModel>
 
 @{
     ViewData["Title"] = "Locations";
@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (LocationListViewModel location in Model)
+            @foreach (LocationListViewModel location in Model.Items)
             {
                 <tr>
                     <td>@location.City</td>
@@ -38,3 +38,5 @@
         </tbody>
     </table>
 </div>
+
+<partial name="_Pagination" model="Model.Pagination" />

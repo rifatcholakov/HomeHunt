@@ -5,7 +5,7 @@ namespace HomeHunt.Service.Data.Properties
 {
     public interface IPropertyService
     {
-        Task<SearchPropertiesResponseData> SearchPropertiesAsync(SearchPropertiesRequestData request);
+        Task<PagedResponseData<GetPropertiesResponseData>> SearchPropertiesAsync(SearchPropertiesRequestData request);
 
         Task<IEnumerable<GetPropertiesResponseData>> GetRecentPropertiesAsync(int count);
 

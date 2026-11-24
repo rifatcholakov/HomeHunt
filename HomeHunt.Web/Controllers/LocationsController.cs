@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
@@ -18,11 +19,11 @@ namespace HomeHunt.Controllers
             _locationService = locationService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            IEnumerable<GetAllLocationsResponseData> response = await _locationService.GetAllLocationsAsync();
+            PagedResponseData<GetAllLocationsResponseData> response = await _locationService.GetAllLocationsAsync(page, DisplayConstants.TablePageSize);
 
-            List<LocationListViewModel> locations = response
+            List<LocationListViewModel> locations = response.Items
                 .Select(l => new LocationListViewModel
                 {
                     Id = l.Id,
@@ -33,7 +34,11 @@ namespace HomeHunt.Controllers
                 })
                 .ToList();
 
-            return View(locations);
+            return View(new PagedViewModel<LocationListViewModel>
+            {
+                Items = locations,
+                Pagination = new PaginationViewModel { CurrentPage = response.Page, TotalPages = response.TotalPages }
+            });
         }
 
         public async Task<IActionResult> Details(int id)

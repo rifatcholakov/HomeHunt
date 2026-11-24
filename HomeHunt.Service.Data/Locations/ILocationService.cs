@@ -5,7 +5,7 @@ namespace HomeHunt.Service.Data.Locations
 {
     public interface ILocationService
     {
-        Task<IEnumerable<GetAllLocationsResponseData>> GetAllLocationsAsync();
+        Task<PagedResponseData<GetAllLocationsResponseData>> GetAllLocationsAsync(int page, int pageSize);
 
         Task<GetLocationDetailsResponseData?> GetLocationDetailsAsync(int id);
 

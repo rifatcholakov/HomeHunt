@@ -3,6 +3,7 @@ using HomeHunt.Data;
 using HomeHunt.Data.Models;
 using HomeHunt.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
@@ -19,7 +20,7 @@ namespace HomeHunt.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<GetAllLocationsResponseData>> GetAllLocationsAsync()
+        public async Task<PagedResponseData<GetAllLocationsResponseData>> GetAllLocationsAsync(int page, int pageSize)
         {
             return await _context.Locations
                 .AsNoTracking()
@@ -33,7 +34,7 @@ namespace HomeHunt.Services
                     PostalCode = l.PostalCode,
                     PropertyCount = l.Properties.Count
                 })
-                .ToListAsync();
+                .ToPagedAsync(page, pageSize);
         }
 
         public async Task<GetLocationDetailsResponseData?> GetLocationDetailsAsync(int id)
