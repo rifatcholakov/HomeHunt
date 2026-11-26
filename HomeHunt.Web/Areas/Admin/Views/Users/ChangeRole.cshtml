@@ -1,0 +1,80 @@
+@model ChangeRoleViewModel
+
+@{
+    ViewData["Title"] = "Change role";
+}
+
+<div class="row">
+    <div class="col-lg-8 col-xl-6">
+        <h1 class="h2 mb-3">Change role</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="ChangeRole" asp-route-id="@Model.UserId" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">User</label>
+                        <input class="form-control" value="@Model.Email" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Current role</label>
+                        <div><span class="badge @(Model.CurrentRole == Roles.Administrator ? "bg-danger" : Model.CurrentRole == Roles.Agent ? "bg-primary" : "bg-secondary")">@Model.CurrentRole</span></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.NewRole" class="form-label"></label>
+                        <select asp-for="Input.NewRole" asp-items="Model.RoleOptions" class="form-select"></select>
+                        <span asp-validation-for="Input.NewRole" class="text-danger"></span>
+                        <div class="form-text">
+                            Each user has exactly one role. Switching to User removes an empty agent profile; an agent who still has properties must have them deleted or reassigned first.
+                        </div>
+                    </div>
+
+                    @if (!Model.HasAgentProfile)
+                    {
+                        <div id="agentFields" data-agent-role="@Roles.Agent" @(Model.Input.NewRole == Roles.Agent ? "" : "hidden")>
+                            <hr />
+                            <p class="text-muted">This user has no agent profile yet. Enter their details to make them an agent.</p>
+
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <label asp-for="Input.FirstName" class="form-label"></label>
+                                    <input asp-for="Input.FirstName" class="form-control" />
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label asp-for="Input.LastName" class="form-label"></label>
+                                    <input asp-for="Input.LastName" class="form-control" />
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.Phone" class="form-label"></label>
+                                <input asp-for="Input.Phone" class="form-control" placeholder="+359888123456" />
+                                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.AgencyName" class="form-label">Agency (optional)</label>
+                                <input asp-for="Input.AgencyName" class="form-control" />
+                                <span asp-validation-for="Input.AgencyName" class="text-danger"></span>
+                                <div class="form-text">@DisplayConstants.AgencyHint</div>
+                            </div>
+                        </div>
+                    }
+
+                    <button type="submit" class="btn btn-primary">Save role</button>
+                    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="module" src="~/js/admin-roles.js" asp-append-version="true"></script>
+}

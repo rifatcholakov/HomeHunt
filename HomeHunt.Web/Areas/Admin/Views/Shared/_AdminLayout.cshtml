@@ -1,0 +1,33 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string? currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+    string Active(string controller)
+    {
+        return currentController == controller ? " active" : "";
+    }
+}
+
+<div class="row g-4">
+    <aside class="col-lg-2">
+        <div class="admin-sidebar">
+            <p class="admin-sidebar-title">Admin panel</p>
+            <nav class="nav flex-row flex-lg-column flex-wrap">
+                <a class="nav-link@(Active("Dashboard"))" asp-area="@Routes.AdminArea" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a class="nav-link@(Active("Users"))" asp-area="@Routes.AdminArea" asp-controller="Users" asp-action="Index">Users</a>
+                <a class="nav-link" asp-area="" asp-controller="Properties" asp-action="Index">Properties</a>
+                <a class="nav-link" asp-area="" asp-controller="Agents" asp-action="Index">Agents</a>
+                <a class="nav-link" asp-area="" asp-controller="Locations" asp-action="Index">Locations</a>
+                <a class="nav-link text-muted" asp-area="" asp-controller="Home" asp-action="Index">&larr; Back to site</a>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="col-lg-10">
+        @RenderBody()
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

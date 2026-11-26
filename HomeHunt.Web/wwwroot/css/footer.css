@@ -1,0 +1,33 @@
+.site-footer {
+  background-color: #f8f9fa;
+  margin-top: 3rem;
+}
+
+.footer-brand {
+  color: #212529;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.footer-title {
+  color: #6c757d;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.footer-links li + li {
+  margin-top: 0.4rem;
+}
+
+.footer-links a {
+  color: #212529;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: #1b6ec2;
+  text-decoration: underline;
+}

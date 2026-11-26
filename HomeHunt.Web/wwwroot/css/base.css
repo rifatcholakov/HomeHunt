@@ -8,13 +8,14 @@ html {
   }
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-body {
-  margin-bottom: 60px;
+body > .container {
+  flex: 1 0 auto;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {

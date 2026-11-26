@@ -18,21 +18,23 @@ namespace HomeHunt.Data
 
             await EnsureRolesExistAsync(roleManager);
 
-            IdentityUser admin = await EnsureUserExistsAsync(
+            await EnsureUserExistsAsync(
                 userManager,
                 configuration[ConfigKeys.AdminEmail]!,
                 configuration[ConfigKeys.AdminPassword]!,
+                Roles.Administrator,
                 Messages.Account.AdminCreateFailedMessage);
-            await EnsureUserIsInRolesAsync(userManager, admin, Roles.Administrator);
 
-            IdentityUser demoUser = await EnsureUserExistsAsync(
+            await EnsureUserExistsAsync(
                 userManager,
                 configuration[ConfigKeys.DemoUserEmail]!,
                 configuration[ConfigKeys.DemoUserPassword]!,
+                Roles.User,
                 Messages.Account.DemoAccountCreateFailedMessage);
-            await EnsureUserIsInRolesAsync(userManager, demoUser, Roles.User);
 
             await SeedDemoAgentsWithPropertiesAsync(userManager, context, configuration[ConfigKeys.DemoAgentPassword]!);
+
+            await EnsureEachUserHasOneRoleAsync(userManager, context);
         }
 
         private static async Task EnsureRolesExistAsync(RoleManager<IdentityRole> roleManager)
@@ -52,6 +54,7 @@ namespace HomeHunt.Data
             UserManager<IdentityUser> userManager,
             string email,
             string password,
+            string role,
             string failureMessage)
         {
             IdentityUser? user = await userManager.FindByEmailAsync(email);
@@ -76,16 +79,37 @@ namespace HomeHunt.Data
                     failureMessage + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
+            await userManager.SetSingleRoleAsync(user, role);
+
             return user;
         }
 
-        private static async Task EnsureUserIsInRolesAsync(UserManager<IdentityUser> userManager, IdentityUser user, params string[] roles)
+        private static async Task EnsureEachUserHasOneRoleAsync(UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
-            foreach (string role in roles)
+            HashSet<string> agentUserIds = (await context.Agents.Select(a => a.UserId).ToListAsync()).ToHashSet();
+
+            var userRoles = await (
+                from userRole in context.UserRoles
+                join role in context.Roles on userRole.RoleId equals role.Id
+                select new { userRole.UserId, RoleName = role.Name! })
+                .ToListAsync();
+
+            Dictionary<string, List<string>> rolesByUser = userRoles
+                .GroupBy(r => r.UserId)
+                .ToDictionary(g => g.Key, g => g.Select(r => r.RoleName).ToList());
+
+            foreach (IdentityUser user in await userManager.Users.ToListAsync())
             {
-                if (!await userManager.IsInRoleAsync(user, role))
+                List<string> currentRoles = rolesByUser.GetValueOrDefault(user.Id) ?? new List<string>();
+
+                string expectedRole = currentRoles.Contains(Roles.Administrator) ? Roles.Administrator
+                    : currentRoles.Contains(Roles.Agent) ? Roles.Agent
+                    : currentRoles.Contains(Roles.User) ? Roles.User
+                    : agentUserIds.Contains(user.Id) ? Roles.Agent : Roles.User;
+
+                if (currentRoles.Count != 1 || currentRoles[0] != expectedRole)
                 {
-                    await userManager.AddToRoleAsync(user, role);
+                    await userManager.SetSingleRoleAsync(user, expectedRole);
                 }
             }
         }
@@ -104,8 +128,8 @@ namespace HomeHunt.Data
                     userManager,
                     demo.Email,
                     demoAgentPassword,
+                    Roles.Agent,
                     Messages.Account.DemoAccountCreateFailedMessage);
-                await EnsureUserIsInRolesAsync(userManager, user, Roles.User, Roles.Agent);
 
                 Agent? agent = await context.Agents.FirstOrDefaultAsync(a => a.UserId == user.Id);
 

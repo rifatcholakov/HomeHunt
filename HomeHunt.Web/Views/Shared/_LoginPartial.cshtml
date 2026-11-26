@@ -1,38 +1,63 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 
-<ul class="navbar-nav align-items-lg-center gap-lg-2">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a class="nav-link d-flex align-items-center" asp-area="" asp-controller="Favorites" asp-action="Index">
-            <span class="text-danger fs-3 lh-1 me-1" aria-hidden="true">&hearts;</span>My Favorites
-        </a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="nav-user-name text-truncate">@User.Identity?.Name</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li>
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage account</a>
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                    <button type="submit" class="dropdown-item">Logout</button>
-                </form>
-            </li>
-        </ul>
-    </li>
+    string email = User.Identity?.Name ?? string.Empty;
+    string role = User.GetRole();
+    string roleBadge = role == Roles.Administrator ? "bg-danger" : role == Roles.Agent ? "bg-primary" : "bg-secondary";
+    bool isAdminArea = ViewContext.RouteData.Values["area"]?.ToString() == Routes.AdminArea;
+    bool isFavorites = ViewContext.RouteData.Values["controller"]?.ToString() == "Favorites";
+
+    <ul class="navbar-nav site-nav-actions">
+        <li class="nav-item dropdown" asp-policy="@Policies.CanAccessAdmin">
+            <button type="button" class="btn btn-sm btn-danger dropdown-toggle@(isAdminArea ? " active" : "")" data-bs-toggle="dropdown" aria-expanded="false">Admin panel</button>
+            <ul class="dropdown-menu dropdown-menu-xl-end">
+                <li><a class="dropdown-item" asp-area="@Routes.AdminArea" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                <li><a class="dropdown-item" asp-area="@Routes.AdminArea" asp-controller="Users" asp-action="Index">Users</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" asp-area="" asp-controller="Properties" asp-action="Create">Add property</a></li>
+                <li><a class="dropdown-item" asp-area="" asp-controller="Agents" asp-action="Create">Add agent</a></li>
+                <li><a class="dropdown-item" asp-area="" asp-controller="Locations" asp-action="Create">Add location</a></li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1@(isFavorites ? " active" : "")" asp-area="" asp-controller="Favorites" asp-action="Index">
+                <span class="nav-heart" aria-hidden="true">&hearts;</span>My Favorites
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="nav-user-name text-truncate">@email</span>
+                <span class="badge @roleBadge nav-role-badge d-xl-none">@role</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-xl-end">
+                <li class="px-3 py-2 d-none d-xl-block">
+                    <div class="small text-muted">Signed in as</div>
+                    <div class="fw-semibold text-break">@email</div>
+                    <span class="badge @roleBadge mt-1">@role</span>
+                </li>
+                <li class="d-none d-xl-block"><hr class="dropdown-divider" /></li>
+                <li>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage account</a>
+                </li>
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
 }
 else
 {
-    <li class="nav-item">
-        <a class="btn btn-outline-primary btn-sm" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-    <li class="nav-item">
-        <a class="btn btn-primary btn-sm" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
+    <ul class="navbar-nav site-nav-actions flex-row">
+        <li class="nav-item">
+            <a class="btn btn-sm btn-outline-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-sm btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+    </ul>
 }
-</ul>

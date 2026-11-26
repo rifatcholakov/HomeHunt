@@ -1,0 +1,61 @@
+<footer class="site-footer border-top">
+    <div class="container">
+        <div class="row gy-4 py-4">
+            <div class="col-xl-4">
+                <a class="footer-brand text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">Home<span class="text-primary">Hunt</span></a>
+                <p class="text-muted mt-2 mb-0">Find your next home, or list one. Properties for sale and for rent, all in one place.</p>
+            </div>
+
+            <div class="col-xl-2 offset-xl-1">
+                <h2 class="footer-title">Explore</h2>
+                <ul class="footer-links list-unstyled mb-0">
+                    <li><a asp-area="" asp-controller="Properties" asp-action="Index">Properties</a></li>
+                    <li><a asp-area="" asp-controller="Locations" asp-action="Index">Locations</a></li>
+                    <li><a asp-area="" asp-controller="Agents" asp-action="Index">Agents</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col-xl-2">
+                <h2 class="footer-title">Browse</h2>
+                <ul class="footer-links list-unstyled mb-0">
+                    <li><a asp-area="" asp-controller="Properties" asp-action="Index" asp-route-ListingType="@ListingType.Sale">For sale</a></li>
+                    <li><a asp-area="" asp-controller="Properties" asp-action="Index" asp-route-ListingType="@ListingType.Rent">For rent</a></li>
+                    <li><a asp-area="" asp-controller="Properties" asp-action="Index" asp-route-SortBy="@SortOptions.Newest">Newest listings</a></li>
+                </ul>
+            </div>
+
+            <div class="col-xl-3">
+                <h2 class="footer-title">Your account</h2>
+                <ul class="footer-links list-unstyled mb-0">
+                    @if (!User.IsSignedIn())
+                    {
+                        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/RegisterAgent">Register as an agent</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Favorites" asp-action="Index">My Favorites</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Manage/Index">Manage account</a></li>
+
+                        <li asp-policy="@Policies.CanAccessAdmin"><a asp-area="@Routes.AdminArea" asp-controller="Dashboard" asp-action="Index">Admin dashboard</a></li>
+
+                        @if (User.IsAdmin() || User.IsAgent())
+                        {
+                            <li><a asp-area="" asp-controller="Properties" asp-action="Create">Add a property</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-area="" asp-controller="Properties" asp-action="GetStartedListing">Become an agent</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom py-3 border-top small text-muted">
+            &copy; @DateTime.Now.Year HomeHunt. All rights reserved.
+        </div>
+    </div>
+</footer>

@@ -15,6 +15,17 @@ namespace HomeHunt.Common
             public const string UpgradedToAgentMessage = "Your account is now an agent account. You can add your first property.";
         }
 
+        public static class Admin
+        {
+            public const string UserNotFoundMessage = "The user could not be found.";
+            public const string CannotChangeOwnAccountMessage = "You can't change or delete your own account here.";
+            public const string CannotDeleteAdministratorMessage = "Remove the administrator role before deleting this user.";
+            public const string RoleChangedMessage = "The user's role was changed.";
+            public const string RoleInvalidMessage = "Please select a valid role.";
+            public const string AgentHasPropertiesMessage = "This user still has properties listed as an agent. Delete or reassign them before changing the role.";
+            public const string UserDeletedMessage = "The user was deleted.";
+        }
+
         public static class Agent
         {
             public const string FirstNameRequiredMessage = "First name is required.";

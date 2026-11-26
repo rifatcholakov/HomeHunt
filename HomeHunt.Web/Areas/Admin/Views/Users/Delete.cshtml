@@ -1,0 +1,21 @@
+@model UserListViewModel
+
+@{
+    ViewData["Title"] = "Delete user";
+}
+
+<h1 class="h2 mb-3">Delete user</h1>
+
+<div class="alert alert-danger">
+    <p class="mb-1">Are you sure you want to delete <strong>@Model.Email</strong>?</p>
+    @if (Model.AgentId != null)
+    {
+        <p class="mb-1">This user is an agent. Their agent profile and <strong>@Model.PropertyCount</strong> propert@(Model.PropertyCount == 1 ? "y" : "ies") will be deleted too.</p>
+    }
+    <p class="mb-0">This cannot be undone.</p>
+</div>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>

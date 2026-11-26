@@ -1,0 +1,150 @@
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin dashboard";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="h2 mb-0">Admin dashboard</h1>
+        <p class="text-muted mb-0">Overview of everything on HomeHunt.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" asp-area="" asp-controller="Properties" asp-action="Create">Add property</a>
+        <a class="btn btn-outline-primary" asp-area="" asp-controller="Agents" asp-action="Create">Add agent</a>
+        <a class="btn btn-outline-primary" asp-area="" asp-controller="Locations" asp-action="Create">Add location</a>
+    </div>
+</div>
+
+<div class="row row-cols-2 row-cols-xl-3 g-3 mb-4">
+    <div class="col">
+        <a class="text-decoration-none text-reset" asp-area="" asp-controller="Properties" asp-action="Index">
+            <div class="card h-100 stat-card stat-primary">
+                <div class="card-body">
+                    <p class="display-6 fw-bold mb-0">@Model.PropertyCount</p>
+                    <p class="text-muted mb-0">Properties</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <div class="card h-100 stat-card stat-success">
+            <div class="card-body">
+                <p class="display-6 fw-bold mb-0">@Model.AvailablePropertyCount</p>
+                <p class="text-muted mb-0">Available now</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <a class="text-decoration-none text-reset" asp-area="" asp-controller="Agents" asp-action="Index">
+            <div class="card h-100 stat-card stat-info">
+                <div class="card-body">
+                    <p class="display-6 fw-bold mb-0">@Model.AgentCount</p>
+                    <p class="text-muted mb-0">Agents</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a class="text-decoration-none text-reset" asp-area="" asp-controller="Locations" asp-action="Index">
+            <div class="card h-100 stat-card stat-warning">
+                <div class="card-body">
+                    <p class="display-6 fw-bold mb-0">@Model.LocationCount</p>
+                    <p class="text-muted mb-0">Locations</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a class="text-decoration-none text-reset" asp-area="@Routes.AdminArea" asp-controller="Users" asp-action="Index">
+            <div class="card h-100 stat-card stat-danger">
+                <div class="card-body">
+                    <p class="display-6 fw-bold mb-0">@Model.UserCount</p>
+                    <p class="text-muted mb-0">Users</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <div class="card h-100 stat-card stat-secondary">
+            <div class="card-body">
+                <p class="display-6 fw-bold mb-0">@Model.FavoriteCount</p>
+                <p class="text-muted mb-0">Saved favorites</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">Recent properties</h2>
+                <a asp-area="" asp-controller="Properties" asp-action="Index">View all</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Listed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DashboardPropertyViewModel property in Model.RecentProperties)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-area="" asp-controller="Properties" asp-action="Details" asp-route-id="@property.Id">@property.Title</a>
+                                    <div class="small text-muted">@property.City &middot; @property.ListingType</div>
+                                </td>
+                                <td>&euro;@property.Price.ToString("N0")@(property.ListingType == ListingType.Rent ? " / month" : "")</td>
+                                <td><partial name="_StatusBadge" model="property.Status" /></td>
+                                <td class="text-muted">@property.CreatedOn.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card mb-4">
+            <div class="card-header bg-white"><h2 class="h6 mb-0">Listings</h2></div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between small"><span>For sale</span><span>@Model.ForSaleCount</span></div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar" role="progressbar" style="width: @(Model.Percentage(Model.ForSaleCount))%"></div>
+                </div>
+                <div class="d-flex justify-content-between small"><span>For rent</span><span>@Model.ForRentCount</span></div>
+                <div class="progress mb-4" style="height: 8px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: @(Model.Percentage(Model.ForRentCount))%"></div>
+                </div>
+
+                @foreach (StatusCountViewModel status in Model.StatusCounts)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <partial name="_StatusBadge" model="status.Status" />
+                        <span class="small">@status.Count</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white"><h2 class="h6 mb-0">Top agents</h2></div>
+            <ul class="list-group list-group-flush">
+                @foreach (DashboardAgentViewModel agent in Model.TopAgents)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a asp-area="" asp-controller="Agents" asp-action="Details" asp-route-id="@agent.Id">@agent.FullName</a>
+                        <span class="badge bg-primary rounded-pill">@agent.PropertyCount</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -2,9 +2,11 @@ using HomeHunt.Authorization;
 using HomeHunt.Common;
 using HomeHunt.Data;
 using HomeHunt.Service.Data.Agents;
+using HomeHunt.Service.Data.Dashboard;
 using HomeHunt.Service.Data.Favorites;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Properties;
+using HomeHunt.Service.Data.Users;
 using HomeHunt.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +36,10 @@ namespace HomeHunt
                 options.AddPolicy(Policies.CanModifyProperty, policy => policy.AddRequirements(new PropertyOwnerRequirement()));
                 options.AddPolicy(Policies.CanManageLocations, policy => policy.RequireRole(Roles.Administrator));
                 options.AddPolicy(Policies.CanManageAgents, policy => policy.RequireRole(Roles.Administrator));
+                options.AddPolicy(Policies.CanAccessAdmin, policy => policy.RequireRole(Roles.Administrator));
             });
+
+            builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.Zero);
 
             builder.Services.AddSingleton<IAuthorizationHandler, PropertyOwnerHandler>();
 
@@ -47,6 +52,8 @@ namespace HomeHunt
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IAgentService, AgentService>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 
@@ -76,6 +83,10 @@ namespace HomeHunt
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

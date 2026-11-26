@@ -206,7 +206,7 @@ namespace HomeHunt.Services
                 return response;
             }
 
-            IdentityResult roleResult = await _userManager.AddToRolesAsync(user, new[] { Roles.User, Roles.Agent });
+            IdentityResult roleResult = await _userManager.SetSingleRoleAsync(user, Roles.Agent);
 
             if (!roleResult.Succeeded)
             {
@@ -260,7 +260,7 @@ namespace HomeHunt.Services
                 return response;
             }
 
-            IdentityResult roleResult = await _userManager.AddToRoleAsync(user, Roles.Agent);
+            IdentityResult roleResult = await _userManager.SetSingleRoleAsync(user, Roles.Agent);
 
             if (!roleResult.Succeeded)
             {
@@ -284,7 +284,7 @@ namespace HomeHunt.Services
             }
             catch (DbUpdateException)
             {
-                await _userManager.RemoveFromRoleAsync(user, Roles.Agent);
+                await _userManager.SetSingleRoleAsync(user, Roles.User);
                 response.Errors.Add(Messages.Agent.SaveFailedMessage);
                 return response;
             }

@@ -6,5 +6,6 @@ namespace HomeHunt.Common
         public const string CanModifyProperty = "CanModifyProperty";
         public const string CanManageLocations = "CanManageLocations";
         public const string CanManageAgents = "CanManageAgents";
+        public const string CanAccessAdmin = "CanAccessAdmin";
     }
 }
