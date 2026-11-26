@@ -10,6 +10,7 @@ using HomeHunt.Service.Data.Users.Request;
 using HomeHunt.Service.Data.Users.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HomeHunt.Services
 {
@@ -61,9 +62,7 @@ namespace HomeHunt.Services
         {
             UserOperationResponseData response = new UserOperationResponseData();
 
-            string[] validRoles = { Roles.Administrator, Roles.Agent, Roles.User };
-
-            if (!validRoles.Contains(request.NewRole))
+            if (!Roles.All.Contains(request.NewRole))
             {
                 response.Errors.Add(Messages.Admin.RoleInvalidMessage);
                 return response;
@@ -88,55 +87,20 @@ namespace HomeHunt.Services
 
             Agent? agent = await _context.Agents.FirstOrDefaultAsync(a => a.UserId == user.Id);
 
-            if (request.NewRole == Roles.Agent && agent == null)
+            await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+
+            List<string> errors = request.NewRole == Roles.Agent && agent == null
+                ? await PromoteToAgentAsync(user, request)
+                : await ApplyRoleAsync(user, agent, request.NewRole);
+
+            if (errors.Count > 0)
             {
-                CreateAgentResponseData upgradeResult = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
-                {
-                    UserId = user.Id,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Phone = request.Phone,
-                    AgencyName = request.AgencyName
-                });
-
-                if (!upgradeResult.Succeeded)
-                {
-                    response.Errors.AddRange(upgradeResult.Errors);
-
-                    if (currentRole != null)
-                    {
-                        await _userManager.SetSingleRoleAsync(user, currentRole);
-                    }
-
-                    return response;
-                }
-            }
-            else
-            {
-                if (request.NewRole == Roles.User && agent != null)
-                {
-                    bool hasProperties = await _context.Properties.AnyAsync(p => p.AgentId == agent.Id);
-
-                    if (hasProperties)
-                    {
-                        response.Errors.Add(Messages.Admin.AgentHasPropertiesMessage);
-                        return response;
-                    }
-
-                    _context.Agents.Remove(agent);
-                    await _context.SaveChangesAsync();
-                }
-
-                IdentityResult roleResult = await _userManager.SetSingleRoleAsync(user, request.NewRole);
-
-                if (!roleResult.Succeeded)
-                {
-                    response.Errors.AddRange(roleResult.Errors.Select(e => e.Description));
-                    return response;
-                }
+                response.Errors.AddRange(errors);
+                return response;
             }
 
             await _userManager.UpdateSecurityStampAsync(user);
+            await transaction.CommitAsync();
 
             response.Succeeded = true;
             return response;
@@ -179,6 +143,40 @@ namespace HomeHunt.Services
 
             response.Succeeded = true;
             return response;
+        }
+
+        private async Task<List<string>> PromoteToAgentAsync(IdentityUser user, ChangeUserRoleRequestData request)
+        {
+            CreateAgentResponseData result = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
+            {
+                UserId = user.Id,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Phone = request.Phone,
+                AgencyName = request.AgencyName
+            });
+
+            return result.Errors.ToList();
+        }
+
+        private async Task<List<string>> ApplyRoleAsync(IdentityUser user, Agent? agent, string newRole)
+        {
+            if (newRole == Roles.User && agent != null)
+            {
+                bool hasProperties = await _context.Properties.AnyAsync(p => p.AgentId == agent.Id);
+
+                if (hasProperties)
+                {
+                    return new List<string> { Messages.Admin.AgentHasPropertiesMessage };
+                }
+
+                _context.Agents.Remove(agent);
+                await _context.SaveChangesAsync();
+            }
+
+            IdentityResult result = await _userManager.SetSingleRoleAsync(user, newRole);
+
+            return result.Errors.Select(e => e.Description).ToList();
         }
 
         private IQueryable<GetUserResponseData> BuildUsersQuery()

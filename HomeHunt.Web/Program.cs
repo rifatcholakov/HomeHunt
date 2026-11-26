@@ -1,6 +1,7 @@
 using HomeHunt.Authorization;
 using HomeHunt.Common;
 using HomeHunt.Data;
+using HomeHunt.Infrastructure;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Dashboard;
 using HomeHunt.Service.Data.Favorites;
@@ -27,7 +28,12 @@ namespace HomeHunt
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddAuthorization(options =>
@@ -38,6 +44,13 @@ namespace HomeHunt
                 options.AddPolicy(Policies.CanManageAgents, policy => policy.RequireRole(Roles.Administrator));
                 options.AddPolicy(Policies.CanAccessAdmin, policy => policy.RequireRole(Roles.Administrator));
             });
+
+            CookieSecurePolicy cookieSecurePolicy = builder.Environment.IsDevelopment()
+                ? CookieSecurePolicy.SameAsRequest
+                : CookieSecurePolicy.Always;
+
+            builder.Services.ConfigureApplicationCookie(options => options.Cookie.SecurePolicy = cookieSecurePolicy);
+            builder.Services.AddAntiforgery(options => options.Cookie.SecurePolicy = cookieSecurePolicy);
 
             builder.Services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.Zero);
 
@@ -75,6 +88,8 @@ namespace HomeHunt
             }
 
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+            app.UseSecurityHeaders();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -39,9 +39,7 @@ namespace HomeHunt.Data
 
         private static async Task EnsureRolesExistAsync(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = { Roles.Administrator, Roles.Agent, Roles.User };
-
-            foreach (string role in roles)
+            foreach (string role in Roles.All)
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {

@@ -172,7 +172,7 @@ namespace HomeHunt.Areas.Admin.Controllers
                 Email = user.Email,
                 CurrentRole = user.Roles.FirstOrDefault() ?? string.Empty,
                 HasAgentProfile = user.AgentId != null,
-                RoleOptions = new[] { Roles.Administrator, Roles.Agent, Roles.User }
+                RoleOptions = Roles.All
                     .Select(role => new SelectListItem { Value = role, Text = role })
                     .ToList()
             };

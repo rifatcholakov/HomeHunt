@@ -17,6 +17,6 @@ else
         <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
         <button type="submit" class="btn btn-light btn-sm favorite-button@(Model.IsFavorite ? " text-danger" : "")"
                 title="@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")"
-                aria-label="@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")">@Html.Raw(Model.IsFavorite ? "&hearts;" : "&#9825;")</button>
+                aria-label="@(Model.IsFavorite ? "Remove from favorites" : "Add to favorites")">@(Model.IsFavorite ? "♥" : "♡")</button>
     </form>
 }
