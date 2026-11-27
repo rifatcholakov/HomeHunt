@@ -13,7 +13,6 @@ namespace HomeHunt.ViewModels
     {
         private string _title = string.Empty;
         private string _description = string.Empty;
-        private string? _imageUrl;
 
         public int Id { get; set; }
 
@@ -73,20 +72,12 @@ namespace HomeHunt.ViewModels
         [EnumDataType(typeof(PropertyStatus), ErrorMessage = StatusInvalidMessage)]
         public PropertyStatus Status { get; set; } = PropertyStatus.Available;
 
-        [StringLength(ImageUrlMaxLength, ErrorMessage = ImageUrlMaxLengthMessage)]
-        [RegularExpression(ImageUrlRegex, ErrorMessage = ImageUrlInvalidMessage)]
-        [Display(Name = "Image link (optional)")]
-        public string? ImageUrl
-        {
-            get
-            {
-                return _imageUrl;
-            }
-            set
-            {
-                _imageUrl = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-            }
-        }
+        [Display(Name = "Add images (optional)")]
+        public List<IFormFile> NewImages { get; set; } = new List<IFormFile>();
+
+        public List<string> ImageOrder { get; set; } = new List<string>();
+
+        public List<int> RemoveImageIds { get; set; } = new List<int>();
 
         [Required(ErrorMessage = LocationRequiredMessage)]
         [Display(Name = "Location")]
@@ -103,5 +94,9 @@ namespace HomeHunt.ViewModels
         [BindNever]
         [ValidateNever]
         public bool CanChooseAgent { get; set; }
+
+        [BindNever]
+        [ValidateNever]
+        public List<PropertyImageViewModel> Images { get; set; } = new List<PropertyImageViewModel>();
     }
 }

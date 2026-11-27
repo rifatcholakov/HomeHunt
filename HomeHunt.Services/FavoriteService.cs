@@ -81,22 +81,8 @@ namespace HomeHunt.Services
                 .AsNoTracking()
                 .Where(f => f.UserId == userId)
                 .OrderByDescending(f => f.CreatedOn)
-                .Select(f => new GetPropertiesResponseData
-                {
-                    Id = f.Property.Id,
-                    Title = f.Property.Title,
-                    City = f.Property.Location.City,
-                    Neighborhood = f.Property.Location.Neighborhood,
-                    Price = f.Property.Price,
-                    Area = f.Property.Area,
-                    Bedrooms = f.Property.Bedrooms,
-                    Bathrooms = f.Property.Bathrooms,
-                    PropertyType = f.Property.PropertyType,
-                    ListingType = f.Property.ListingType,
-                    Status = f.Property.Status,
-                    ImageUrl = f.Property.ImageUrl,
-                    OwnerUserId = f.Property.Agent.UserId
-                })
+                .Select(f => f.Property)
+                .Select(PropertyProjections.ListItem)
                 .ToListAsync();
         }
     }

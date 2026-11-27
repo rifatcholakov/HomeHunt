@@ -1,6 +1,6 @@
 namespace HomeHunt.Service.Data.Locations.Request
 {
-    public class CreateLocationRequestData
+    public class SaveLocationRequestData
     {
         public string City { get; set; } = string.Empty;
 

@@ -4,7 +4,6 @@ using HomeHunt.Data.Models;
 using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
-using HomeHunt.Service.Data.Agents.Response;
 using HomeHunt.Service.Data.Users;
 using HomeHunt.Service.Data.Users.Request;
 using HomeHunt.Service.Data.Users.Response;
@@ -58,9 +57,9 @@ namespace HomeHunt.Services
             return user;
         }
 
-        public async Task<UserOperationResponseData> ChangeRoleAsync(ChangeUserRoleRequestData request)
+        public async Task<OperationResponseData> ChangeRoleAsync(ChangeUserRoleRequestData request)
         {
-            UserOperationResponseData response = new UserOperationResponseData();
+            OperationResponseData response = new OperationResponseData();
 
             if (!Roles.All.Contains(request.NewRole))
             {
@@ -106,9 +105,9 @@ namespace HomeHunt.Services
             return response;
         }
 
-        public async Task<UserOperationResponseData> DeleteUserAsync(string id)
+        public async Task<OperationResponseData> DeleteUserAsync(string id)
         {
-            UserOperationResponseData response = new UserOperationResponseData();
+            OperationResponseData response = new OperationResponseData();
 
             IdentityUser? user = await _userManager.FindByIdAsync(id);
 
@@ -147,7 +146,7 @@ namespace HomeHunt.Services
 
         private async Task<List<string>> PromoteToAgentAsync(IdentityUser user, ChangeUserRoleRequestData request)
         {
-            CreateAgentResponseData result = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
+            OperationResponseData result = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
             {
                 UserId = user.Id,
                 FirstName = request.FirstName,

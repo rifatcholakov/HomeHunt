@@ -1,8 +1,9 @@
 using HomeHunt.Common.Enums;
+using HomeHunt.Service.Data.Images.Request;
 
 namespace HomeHunt.Service.Data.Properties.Request
 {
-    public class CreatePropertyRequestData
+    public class SavePropertyRequestData
     {
         public string Title { get; set; } = string.Empty;
 
@@ -22,10 +23,12 @@ namespace HomeHunt.Service.Data.Properties.Request
 
         public PropertyStatus Status { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public int LocationId { get; set; }
 
         public int AgentId { get; set; }
+
+        public List<ImageOrderRequestData> ImageOrder { get; set; } = new List<ImageOrderRequestData>();
+
+        public List<ImageUploadRequestData> NewImages { get; set; } = new List<ImageUploadRequestData>();
     }
 }

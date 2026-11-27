@@ -1,6 +1,6 @@
 namespace HomeHunt.Service.Data.Agents.Request
 {
-    public class UpdateAgentRequestData
+    public class AgentProfileRequestData
     {
         public string FirstName { get; set; } = string.Empty;
 

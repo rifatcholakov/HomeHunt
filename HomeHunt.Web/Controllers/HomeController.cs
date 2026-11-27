@@ -1,3 +1,4 @@
+using HomeHunt.Mapping;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Response;
 using HomeHunt.Service.Data.Properties;
@@ -32,22 +33,7 @@ namespace HomeHunt.Controllers
                 ForSaleCount = await _propertyService.CountAvailablePropertiesForSaleAsync(),
                 ForRentCount = await _propertyService.CountAvailablePropertiesForRentAsync(),
                 RecentProperties = recentProperties
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
+                    .Select(p => p.ToViewModel())
                     .ToList(),
                 Cities = cities.ToList(),
                 CityCounts = cityCounts

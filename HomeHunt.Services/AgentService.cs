@@ -8,7 +8,6 @@ using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
 using HomeHunt.Service.Data.Agents.Response;
-using HomeHunt.Service.Data.Properties.Response;
 
 namespace HomeHunt.Services
 {
@@ -16,11 +15,13 @@ namespace HomeHunt.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IPropertyImageManager _images;
 
-        public AgentService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public AgentService(ApplicationDbContext context, UserManager<IdentityUser> userManager, IPropertyImageManager images)
         {
             _context = context;
             _userManager = userManager;
+            _images = images;
         }
 
         public async Task<PagedResponseData<GetAllAgentsResponseData>> GetAllAgentsAsync(int page, int pageSize)
@@ -56,23 +57,9 @@ namespace HomeHunt.Services
                     Email = a.User.Email!,
                     Phone = a.Phone,
                     Properties = a.Properties
+                        .AsQueryable()
                         .OrderByDescending(p => p.CreatedOn)
-                        .Select(p => new GetPropertiesResponseData
-                        {
-                            Id = p.Id,
-                            Title = p.Title,
-                            City = p.Location.City,
-                            Neighborhood = p.Location.Neighborhood,
-                            Price = p.Price,
-                            Area = p.Area,
-                            Bedrooms = p.Bedrooms,
-                            Bathrooms = p.Bathrooms,
-                            PropertyType = p.PropertyType,
-                            ListingType = p.ListingType,
-                            Status = p.Status,
-                            ImageUrl = p.ImageUrl,
-                            OwnerUserId = p.Agent.UserId
-                        })
+                        .Select(PropertyProjections.ListItem)
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -93,6 +80,7 @@ namespace HomeHunt.Services
         {
             Agent? agent = await _context.Agents
                 .Include(a => a.Properties)
+                    .ThenInclude(p => p.Images)
                 .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
@@ -102,10 +90,13 @@ namespace HomeHunt.Services
             }
 
             IdentityUser user = agent.User;
+            List<PropertyImage> images = agent.Properties.SelectMany(p => p.Images).ToList();
 
             _context.Properties.RemoveRange(agent.Properties);
             _context.Agents.Remove(agent);
             await _context.SaveChangesAsync();
+
+            await _images.DeleteFromStorageAsync(images);
 
             await _userManager.DeleteAsync(user);
             return true;
@@ -168,7 +159,7 @@ namespace HomeHunt.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateAgentAsync(int id, UpdateAgentRequestData request)
+        public async Task<bool> UpdateAgentAsync(int id, AgentProfileRequestData request)
         {
             Agent? agent = await _context.Agents.FindAsync(id);
 
@@ -186,9 +177,9 @@ namespace HomeHunt.Services
             return true;
         }
 
-        public async Task<CreateAgentResponseData> CreateAgentAsync(CreateAgentRequestData request)
+        public async Task<OperationResponseData> CreateAgentAsync(CreateAgentRequestData request)
         {
-            CreateAgentResponseData response = new CreateAgentResponseData();
+            OperationResponseData response = new OperationResponseData();
 
             string email = request.Email.ToLowerInvariant();
 
@@ -240,9 +231,9 @@ namespace HomeHunt.Services
             return response;
         }
 
-        public async Task<CreateAgentResponseData> UpgradeToAgentAsync(UpgradeToAgentRequestData request)
+        public async Task<OperationResponseData> UpgradeToAgentAsync(UpgradeToAgentRequestData request)
         {
-            CreateAgentResponseData response = new CreateAgentResponseData();
+            OperationResponseData response = new OperationResponseData();
 
             IdentityUser? user = await _userManager.FindByIdAsync(request.UserId);
 

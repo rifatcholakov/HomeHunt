@@ -2,6 +2,12 @@ namespace HomeHunt.Common
 {
     public static class Messages
     {
+        public static class Configuration
+        {
+            public const string CloudinaryNotConfiguredMessage =
+                $"Cloudinary is not configured, so property image uploads are disabled. Set {CloudinaryOptions.SectionName}:{nameof(CloudinaryOptions.CloudName)}, {CloudinaryOptions.SectionName}:{nameof(CloudinaryOptions.ApiKey)} and {CloudinaryOptions.SectionName}:{nameof(CloudinaryOptions.ApiSecret)} in user secrets.";
+        }
+
         public static class Account
         {
             public const string AdminCreateFailedMessage = "Could not create the admin account: ";
@@ -80,8 +86,11 @@ namespace HomeHunt.Common
             public const string PropertyTypeInvalidMessage = "Please select a valid property type.";
             public const string ListingTypeInvalidMessage = "Please select a valid listing type.";
             public const string StatusInvalidMessage = "Please select a valid status.";
-            public const string ImageUrlMaxLengthMessage = "The link can be at most {1} characters.";
-            public const string ImageUrlInvalidMessage = "Enter a valid link that starts with http:// or https://";
+            public const string ImagesTooManyMessage = "A property can have at most {0} images.";
+            public const string ImageTooLargeMessage = "\"{0}\" is larger than {1} MB.";
+            public const string ImageTypeInvalidMessage = "\"{0}\" is not a supported image. Use JPG, PNG, WebP or GIF.";
+            public const string ImageStorageNotConfiguredMessage = "Image uploads are not set up yet. Ask an administrator to configure the image storage.";
+            public const string ImageUploadFailedMessage = "The images could not be uploaded. Please try again.";
             public const string LocationRequiredMessage = "Please select a location.";
             public const string AgentRequiredMessage = "Please select an agent.";
             public const string LocationInvalidMessage = "Please select a valid location.";

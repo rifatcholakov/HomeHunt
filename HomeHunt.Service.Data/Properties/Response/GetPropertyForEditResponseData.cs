@@ -24,10 +24,10 @@ namespace HomeHunt.Service.Data.Properties.Response
 
         public PropertyStatus Status { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public int LocationId { get; set; }
 
         public int AgentId { get; set; }
+
+        public List<GetPropertyImageResponseData> Images { get; set; } = new List<GetPropertyImageResponseData>();
     }
 }

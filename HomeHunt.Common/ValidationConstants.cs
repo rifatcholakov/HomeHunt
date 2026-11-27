@@ -17,6 +17,15 @@ namespace HomeHunt.Common
             public const int DescriptionMaxLength = 2000;
 
             public const int ImageUrlMaxLength = 2048;
+            public const int ImagePublicIdMaxLength = 255;
+
+            public const string ImageAcceptTypes = "image/jpeg,image/png,image/webp,image/gif";
+
+            public static readonly IReadOnlyList<string> AllowedImageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+
+            public const int MaxImagesPerProperty = 8;
+            public const int MaxImageSizeInMegabytes = 3;
+            public const int MaxImageSizeInBytes = MaxImageSizeInMegabytes * 1024 * 1024;
 
             public const int PriceMinValue = 1;
             public const int PriceMaxValue = 100000000;
@@ -31,8 +40,6 @@ namespace HomeHunt.Common
             public const int BathroomsMaxValue = 50;
 
             public const int SearchMinValue = 0;
-
-            public const string ImageUrlRegex = @"^https?://\S+$";
         }
 
         public static class Location

@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = Model.Title;
     string defaultImage = Url.Content("~/images/default-property-image.svg");
-    string imageUrl = string.IsNullOrEmpty(Model.ImageUrl) ? defaultImage : Model.ImageUrl;
+    List<string> imageUrls = Model.Images.Select(image => image.Url).ToList();
+    int imageCount = imageUrls.Count;
+    int visibleImages = Math.Min(imageCount, 3);
     string pricePerSquareMeter = Model.Area > 0 ? (Model.Price / Model.Area).ToString("N2") : "-";
 }
 
@@ -14,8 +16,33 @@
 
 <div class="row g-4">
     <div class="col-lg-8">
-        <img src="@imageUrl" class="img-fluid rounded mb-3 property-details-image" alt="@Model.Title"
-             data-fallback-src="@defaultImage" />
+        @if (imageCount == 0)
+        {
+            <img src="@defaultImage" class="rounded w-100 mb-3 gallery-empty" alt="No photo available for @Model.Title" />
+        }
+        else
+        {
+            <div class="property-gallery gallery-@visibleImages mb-3">
+                @for (int index = 0; index < imageCount; index++)
+                {
+                    <a href="@ImageStorage.GetFittedUrl(imageUrls[index], 2000)" class="glightbox gallery-item gallery-item-@index@(index < 3 ? "" : " d-none")"
+                       data-gallery="property" data-title="@Model.Title" data-description="Photo @(index + 1) of @imageCount">
+                        <img src="@(index == 0 ? ImageStorage.GetResizedUrl(imageUrls[index], 1200, 800) : ImageStorage.GetResizedUrl(imageUrls[index], 600, 400))"
+                             alt="@Model.Title, photo @(index + 1) of @imageCount" data-fallback-src="@defaultImage"
+                             @(index == 0 ? "" : "loading=lazy") />
+                        @if (index == 2 && imageCount > 3)
+                        {
+                            <span class="gallery-more">+@(imageCount - 3) more</span>
+                        }
+                    </a>
+                }
+
+                @if (imageCount > 1)
+                {
+                    <button type="button" class="btn btn-light btn-sm gallery-show-all" data-gallery-open>Show all @imageCount photos</button>
+                }
+            </div>
+        }
 
         <div class="mb-2">
             <span class="badge bg-secondary">@Model.PropertyType</span>
@@ -99,3 +126,13 @@
         </div>
     </div>
 </div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/glightbox/glightbox.min.css" />
+    <link rel="stylesheet" href="~/css/gallery.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/lib/glightbox/glightbox.min.js"></script>
+    <script type="module" src="~/js/property-gallery.js" asp-append-version="true"></script>
+}

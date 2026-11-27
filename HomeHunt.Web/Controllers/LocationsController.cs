@@ -1,3 +1,4 @@
+using HomeHunt.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Locations;
@@ -50,34 +51,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            LocationDetailsViewModel model = new LocationDetailsViewModel
-            {
-                Id = location.Id,
-                City = location.City,
-                Neighborhood = location.Neighborhood,
-                PostalCode = location.PostalCode,
-                PropertyCount = location.PropertyCount,
-                ForSaleCount = location.ForSaleCount,
-                ForRentCount = location.ForRentCount,
-                Properties = location.Properties
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
-                    .ToList()
-            };
+            LocationDetailsViewModel model = location.ToDetailsViewModel();
 
             return View(model);
         }
@@ -111,7 +85,7 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            await _locationService.CreateLocationAsync(new CreateLocationRequestData
+            await _locationService.CreateLocationAsync(new SaveLocationRequestData
             {
                 City = model.City,
                 Neighborhood = model.Neighborhood,
@@ -132,34 +106,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            LocationDetailsViewModel model = new LocationDetailsViewModel
-            {
-                Id = location.Id,
-                City = location.City,
-                Neighborhood = location.Neighborhood,
-                PostalCode = location.PostalCode,
-                PropertyCount = location.PropertyCount,
-                ForSaleCount = location.ForSaleCount,
-                ForRentCount = location.ForRentCount,
-                Properties = location.Properties
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
-                    .ToList()
-            };
+            LocationDetailsViewModel model = location.ToDetailsViewModel();
 
             return View(model);
         }
@@ -228,7 +175,7 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            bool updated = await _locationService.UpdateLocationAsync(id, new UpdateLocationRequestData
+            bool updated = await _locationService.UpdateLocationAsync(id, new SaveLocationRequestData
             {
                 City = model.City,
                 Neighborhood = model.Neighborhood,

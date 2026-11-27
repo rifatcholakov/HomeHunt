@@ -3,8 +3,6 @@ using HomeHunt.Common.Enums;
 
 namespace HomeHunt.Data
 {
-    public record DemoAgent(int Key, string Email, string FirstName, string LastName, string Phone, string AgencyName);
-
     public static class SeedData
     {
         public static Location[] GetLocations()
@@ -55,7 +53,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 1,
                     AgentId = 1,
-                    ImageUrl = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-2)
                 },
                 new Property
@@ -72,7 +70,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 2,
                     AgentId = 1,
-                    ImageUrl = "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-1)
                 },
                 new Property
@@ -105,7 +103,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 2,
                     AgentId = 3,
-                    ImageUrl = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-12)
                 },
                 new Property
@@ -122,7 +120,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Rented,
                     LocationId = 3,
                     AgentId = 4,
-                    ImageUrl = "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-20)
                 },
                 new Property
@@ -139,7 +137,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 4,
                     AgentId = 4,
-                    ImageUrl = "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-3)
                 },
                 new Property
@@ -156,7 +154,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 4,
                     AgentId = 3,
-                    ImageUrl = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-6)
                 },
                 new Property
@@ -173,7 +171,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 6,
                     AgentId = 5,
-                    ImageUrl = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-1)
                 },
                 new Property
@@ -190,7 +188,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Reserved,
                     LocationId = 7,
                     AgentId = 5,
-                    ImageUrl = "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-7)
                 },
                 new Property
@@ -207,7 +205,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Sold,
                     LocationId = 8,
                     AgentId = 6,
-                    ImageUrl = "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-30)
                 },
                 new Property
@@ -240,7 +238,7 @@ namespace HomeHunt.Data
                     Status = PropertyStatus.Available,
                     LocationId = 9,
                     AgentId = 7,
-                    ImageUrl = "https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=70",
+                    Images = new List<PropertyImage> { new PropertyImage { Url = "https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=70" } },
                     CreatedOn = new DateTime(2026, 10, 1).AddDays(-13)
                 }
             };

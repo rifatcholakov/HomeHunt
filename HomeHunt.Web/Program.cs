@@ -1,10 +1,11 @@
 using HomeHunt.Authorization;
 using HomeHunt.Common;
 using HomeHunt.Data;
-using HomeHunt.Infrastructure;
+using HomeHunt.Security;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Dashboard;
 using HomeHunt.Service.Data.Favorites;
+using HomeHunt.Service.Data.Images;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Properties;
 using HomeHunt.Service.Data.Users;
@@ -61,6 +62,10 @@ namespace HomeHunt
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
+            builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection(CloudinaryOptions.SectionName));
+            builder.Services.AddSingleton<IImageStorageService, CloudinaryImageStorageService>();
+            builder.Services.AddScoped<IPropertyImageManager, PropertyImageManager>();
+
             builder.Services.AddScoped<IPropertyService, PropertyService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IAgentService, AgentService>();
@@ -73,6 +78,11 @@ namespace HomeHunt
             using (IServiceScope scope = app.Services.CreateScope())
             {
                 await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+            }
+
+            if (app.Configuration.GetSection(CloudinaryOptions.SectionName).Get<CloudinaryOptions>()?.IsConfigured != true)
+            {
+                app.Logger.LogWarning(Messages.Configuration.CloudinaryNotConfiguredMessage);
             }
 
             // Configure the HTTP request pipeline.

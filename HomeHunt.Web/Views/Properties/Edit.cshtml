@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-lg-8">
-        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
             <partial name="_PropertyForm" model="Model" />
 
             <button type="submit" class="btn btn-primary">Save</button>
@@ -19,4 +19,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/sortablejs/Sortable.min.js"></script>
+    <script type="module" src="~/js/property-images.js" asp-append-version="true"></script>
 }

@@ -97,7 +97,7 @@ namespace HomeHunt.Areas.Admin.Controllers
                 return View(model);
             }
 
-            UserOperationResponseData result = await _userService.ChangeRoleAsync(new ChangeUserRoleRequestData
+            OperationResponseData result = await _userService.ChangeRoleAsync(new ChangeUserRoleRequestData
             {
                 UserId = id,
                 NewRole = input.NewRole,
@@ -153,7 +153,7 @@ namespace HomeHunt.Areas.Admin.Controllers
                 return RedirectWithError(CannotChangeOwnAccountMessage);
             }
 
-            UserOperationResponseData result = await _userService.DeleteUserAsync(id);
+            OperationResponseData result = await _userService.DeleteUserAsync(id);
 
             if (!result.Succeeded)
             {

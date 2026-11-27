@@ -24,8 +24,6 @@ namespace HomeHunt.Service.Data.Properties.Response
 
         public PropertyStatus Status { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         public int LocationId { get; set; }
@@ -45,5 +43,7 @@ namespace HomeHunt.Service.Data.Properties.Response
         public string AgentEmail { get; set; } = string.Empty;
 
         public string AgentPhone { get; set; } = string.Empty;
+
+        public List<GetPropertyImageResponseData> Images { get; set; } = new List<GetPropertyImageResponseData>();
     }
 }

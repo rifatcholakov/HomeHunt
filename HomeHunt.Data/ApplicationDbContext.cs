@@ -15,6 +15,7 @@ namespace HomeHunt.Data
         public DbSet<Location> Locations { get; set; } = null!;
         public DbSet<Agent> Agents { get; set; } = null!;
         public DbSet<FavoriteProperty> Favorites { get; set; } = null!;
+        public DbSet<PropertyImage> PropertyImages { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -49,6 +50,12 @@ namespace HomeHunt.Data
                 .WithMany(a => a.Properties)
                 .HasForeignKey(p => p.AgentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PropertyImage>()
+                .HasOne(i => i.Property)
+                .WithMany(p => p.Images)
+                .HasForeignKey(i => i.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<FavoriteProperty>()
                 .HasKey(f => new { f.UserId, f.PropertyId });

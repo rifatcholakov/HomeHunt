@@ -1,0 +1,44 @@
+@model PropertyFormViewModel
+
+@{
+    List<PropertyImageViewModel> orderedImages = Model.Images
+        .OrderBy(image =>
+        {
+            int position = Model.ImageOrder.IndexOf($"{ImageOrderTokens.Existing}{image.Id}");
+
+            return position >= 0 ? position : int.MaxValue;
+        })
+        .ToList();
+}
+
+<div class="mb-3" data-image-manager
+     data-max-files="@ValidationConstants.Property.MaxImagesPerProperty"
+     data-max-size="@ValidationConstants.Property.MaxImageSizeInBytes"
+     data-fallback="@Url.Content("~/images/default-property-image.svg")">
+    <label class="form-label" for="NewImages">@Html.DisplayNameFor(model => model.NewImages)</label>
+
+    @foreach (PropertyImageViewModel image in orderedImages)
+    {
+        <span hidden data-existing-image
+              data-id="@image.Id"
+              data-src="@ImageStorage.GetResizedUrl(image.Url, 480, 320)"
+              data-removed="@(Model.RemoveImageIds.Contains(image.Id) ? "true" : "false")"></span>
+    }
+
+    <div hidden data-order-inputs></div>
+    <div hidden data-remove-inputs></div>
+
+    <p class="form-text mt-0 mb-2">Drag the images to change their order. The first image is the cover.</p>
+    <div class="row row-cols-2 row-cols-md-3 g-3 mb-3 image-grid" data-image-tiles></div>
+
+    <label for="NewImages" class="dropzone" data-dropzone>
+        <span class="dropzone-title">Drag and drop images here, or click to browse</span>
+        <span class="dropzone-hint">
+            Up to @ValidationConstants.Property.MaxImagesPerProperty images per property, @ValidationConstants.Property.MaxImageSizeInMegabytes MB each (JPG, PNG, WebP or GIF). Large photos are shrunk automatically. The first image is the cover.
+        </span>
+    </label>
+    <input asp-for="NewImages" type="file" class="visually-hidden" data-val="false" multiple accept="@ValidationConstants.Property.ImageAcceptTypes" />
+    <span asp-validation-for="NewImages" class="text-danger"></span>
+    <div class="text-danger small mt-2" data-image-errors></div>
+    <div class="small text-muted mt-1" data-image-summary></div>
+</div>

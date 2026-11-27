@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using HomeHunt.Mapping;
+using HomeHunt.Validation;
 using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Response;
@@ -66,22 +68,7 @@ namespace HomeHunt.Controllers
                 searchModel.TotalCount = response.TotalCount;
 
                 searchModel.Properties = response.Items
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
+                    .Select(p => p.ToViewModel())
                     .ToList();
             }
 
@@ -97,30 +84,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            PropertyDetailsViewModel model = new PropertyDetailsViewModel
-            {
-                Id = property.Id,
-                Title = property.Title,
-                Description = property.Description,
-                Price = property.Price,
-                Area = property.Area,
-                Bedrooms = property.Bedrooms,
-                Bathrooms = property.Bathrooms,
-                PropertyType = property.PropertyType,
-                ListingType = property.ListingType,
-                Status = property.Status,
-                ImageUrl = property.ImageUrl,
-                CreatedOn = property.CreatedOn,
-                LocationId = property.LocationId,
-                City = property.City,
-                Neighborhood = property.Neighborhood,
-                AgentId = property.AgentId,
-                OwnerUserId = property.OwnerUserId,
-                AgentFirstName = property.AgentFirstName,
-                AgentLastName = property.AgentLastName,
-                AgentEmail = property.AgentEmail,
-                AgentPhone = property.AgentPhone
-            };
+            PropertyDetailsViewModel model = property.ToViewModel();
 
             return View(model);
         }
@@ -162,15 +126,7 @@ namespace HomeHunt.Controllers
                 return Forbid();
             }
 
-            if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
-            {
-                ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
-            }
-
-            if (model.AgentId != null && !await _agentService.AgentExistsAsync(model.AgentId.Value))
-            {
-                ModelState.AddModelError(nameof(model.AgentId), AgentInvalidMessage);
-            }
+            await ValidateFormAsync(model);
 
             if (!ModelState.IsValid)
             {
@@ -178,21 +134,14 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            await _propertyService.CreatePropertyAsync(new CreatePropertyRequestData
+            OperationResponseData result = await _propertyService.CreatePropertyAsync(model.ToCreateRequest(), HttpContext.RequestAborted);
+
+            if (!result.Succeeded)
             {
-                Title = model.Title,
-                Description = model.Description,
-                Price = model.Price ?? 0,
-                Area = model.Area ?? 0,
-                Bedrooms = model.Bedrooms,
-                Bathrooms = model.Bathrooms,
-                PropertyType = model.PropertyType,
-                ListingType = model.ListingType,
-                Status = model.Status,
-                ImageUrl = model.ImageUrl,
-                LocationId = model.LocationId ?? 0,
-                AgentId = model.AgentId ?? 0
-            });
+                AddErrors(result);
+                await PopulateLocationAndAgentOptionsAsync(model);
+                return View(model);
+            }
 
             TempData[TempDataKeys.SuccessMessage] = CreatedMessage;
             return RedirectToAction(nameof(Index));
@@ -227,7 +176,7 @@ namespace HomeHunt.Controllers
                 PropertyType = property.PropertyType,
                 ListingType = property.ListingType,
                 Status = property.Status,
-                ImageUrl = property.ImageUrl,
+                Images = PropertyImageFormMapper.ToViewModels(property.Images),
                 LocationId = property.LocationId,
                 AgentId = property.AgentId
             };
@@ -258,41 +207,28 @@ namespace HomeHunt.Controllers
                 return Forbid();
             }
 
-            if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
-            {
-                ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
-            }
-
-            if (model.AgentId != null && !await _agentService.AgentExistsAsync(model.AgentId.Value))
-            {
-                ModelState.AddModelError(nameof(model.AgentId), AgentInvalidMessage);
-            }
+            await ValidateFormAsync(model);
 
             if (!ModelState.IsValid)
             {
                 await PopulateLocationAndAgentOptionsAsync(model);
+                await LoadExistingImagesAsync(model);
                 return View(model);
             }
 
-            bool updated = await _propertyService.UpdatePropertyAsync(id, new UpdatePropertyRequestData
-            {
-                Title = model.Title,
-                Description = model.Description,
-                Price = model.Price ?? 0,
-                Area = model.Area ?? 0,
-                Bedrooms = model.Bedrooms,
-                Bathrooms = model.Bathrooms,
-                PropertyType = model.PropertyType,
-                ListingType = model.ListingType,
-                Status = model.Status,
-                ImageUrl = model.ImageUrl,
-                LocationId = model.LocationId ?? 0,
-                AgentId = model.AgentId ?? 0
-            });
+            OperationResponseData result = await _propertyService.UpdatePropertyAsync(id, model.ToUpdateRequest(), HttpContext.RequestAborted);
 
-            if (!updated)
+            if (result.NotFound)
             {
                 return NotFound();
+            }
+
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                await PopulateLocationAndAgentOptionsAsync(model);
+                await LoadExistingImagesAsync(model);
+                return View(model);
             }
 
             TempData[TempDataKeys.SuccessMessage] = UpdatedMessage;
@@ -316,30 +252,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            PropertyDetailsViewModel model = new PropertyDetailsViewModel
-            {
-                Id = property.Id,
-                Title = property.Title,
-                Description = property.Description,
-                Price = property.Price,
-                Area = property.Area,
-                Bedrooms = property.Bedrooms,
-                Bathrooms = property.Bathrooms,
-                PropertyType = property.PropertyType,
-                ListingType = property.ListingType,
-                Status = property.Status,
-                ImageUrl = property.ImageUrl,
-                CreatedOn = property.CreatedOn,
-                LocationId = property.LocationId,
-                City = property.City,
-                Neighborhood = property.Neighborhood,
-                AgentId = property.AgentId,
-                OwnerUserId = property.OwnerUserId,
-                AgentFirstName = property.AgentFirstName,
-                AgentLastName = property.AgentLastName,
-                AgentEmail = property.AgentEmail,
-                AgentPhone = property.AgentPhone
-            };
+            PropertyDetailsViewModel model = property.ToViewModel();
 
             return View(model);
         }
@@ -355,7 +268,7 @@ namespace HomeHunt.Controllers
                 return denied;
             }
 
-            bool deleted = await _propertyService.DeletePropertyAsync(id);
+            bool deleted = await _propertyService.DeletePropertyAsync(id, HttpContext.RequestAborted);
 
             if (!deleted)
             {
@@ -364,6 +277,39 @@ namespace HomeHunt.Controllers
 
             TempData[TempDataKeys.SuccessMessage] = DeletedMessage;
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task ValidateFormAsync(PropertyFormViewModel model)
+        {
+            if (model.LocationId != null && !await _locationService.LocationExistsAsync(model.LocationId.Value))
+            {
+                ModelState.AddModelError(nameof(model.LocationId), LocationInvalidMessage);
+            }
+
+            if (model.AgentId != null && !await _agentService.AgentExistsAsync(model.AgentId.Value))
+            {
+                ModelState.AddModelError(nameof(model.AgentId), AgentInvalidMessage);
+            }
+
+            foreach (string error in await ImageFileValidator.ValidateAsync(model.NewImages, HttpContext.RequestAborted))
+            {
+                ModelState.AddModelError(nameof(model.NewImages), error);
+            }
+        }
+
+        private void AddErrors(OperationResponseData result)
+        {
+            foreach (string error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
+        }
+
+        private async Task LoadExistingImagesAsync(PropertyFormViewModel model)
+        {
+            GetPropertyForEditResponseData? property = await _propertyService.GetPropertyForEditAsync(model.Id);
+
+            model.Images = PropertyImageFormMapper.ToViewModels(property?.Images ?? new List<GetPropertyImageResponseData>());
         }
 
         private async Task<IActionResult?> CheckCanModifyAsync(int propertyId)

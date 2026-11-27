@@ -205,10 +205,6 @@ namespace HomeHunt.Data.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
-
                     b.Property<int>("ListingType")
                         .HasColumnType("int");
 
@@ -236,6 +232,36 @@ namespace HomeHunt.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Properties");
+                });
+
+            modelBuilder.Entity("HomeHunt.Data.Models.PropertyImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -489,6 +515,17 @@ namespace HomeHunt.Data.Migrations
                     b.Navigation("Location");
                 });
 
+            modelBuilder.Entity("HomeHunt.Data.Models.PropertyImage", b =>
+                {
+                    b.HasOne("HomeHunt.Data.Models.Property", "Property")
+                        .WithMany("Images")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -548,6 +585,11 @@ namespace HomeHunt.Data.Migrations
             modelBuilder.Entity("HomeHunt.Data.Models.Location", b =>
                 {
                     b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("HomeHunt.Data.Models.Property", b =>
+                {
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

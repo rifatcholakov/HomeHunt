@@ -38,9 +38,6 @@ namespace HomeHunt.Data.Models
 
         public PropertyStatus Status { get; set; }
 
-        [StringLength(ImageUrlMaxLength)]
-        public string? ImageUrl { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         [ForeignKey(nameof(Location))]
@@ -50,5 +47,7 @@ namespace HomeHunt.Data.Models
         [ForeignKey(nameof(Agent))]
         public int AgentId { get; set; }
         public Agent Agent { get; set; } = null!;
+
+        public ICollection<PropertyImage> Images { get; set; } = new List<PropertyImage>();
     }
 }

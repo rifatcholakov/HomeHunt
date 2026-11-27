@@ -7,16 +7,19 @@ using HomeHunt.Service.Data.Properties.Request;
 using HomeHunt.Service.Data.Properties.Response;
 using HomeHunt.Common;
 using HomeHunt.Service.Data;
+using static HomeHunt.Common.ValidationConstants.Property;
 
 namespace HomeHunt.Services
 {
     public class PropertyService : IPropertyService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPropertyImageManager _images;
 
-        public PropertyService(ApplicationDbContext context)
+        public PropertyService(ApplicationDbContext context, IPropertyImageManager images)
         {
             _context = context;
+            _images = images;
         }
 
         public async Task<PagedResponseData<GetPropertiesResponseData>> SearchPropertiesAsync(SearchPropertiesRequestData request)
@@ -79,22 +82,7 @@ namespace HomeHunt.Services
 
             return await orderedQuery
                 .ThenBy(p => p.Id)
-                .Select(p => new GetPropertiesResponseData
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    City = p.Location.City,
-                    Neighborhood = p.Location.Neighborhood,
-                    Price = p.Price,
-                    Area = p.Area,
-                    Bedrooms = p.Bedrooms,
-                    Bathrooms = p.Bathrooms,
-                    PropertyType = p.PropertyType,
-                    ListingType = p.ListingType,
-                    Status = p.Status,
-                    ImageUrl = p.ImageUrl,
-                    OwnerUserId = p.Agent.UserId
-                })
+                .Select(PropertyProjections.ListItem)
                 .ToPagedAsync(request.Page, request.PageSize);
         }
 
@@ -104,22 +92,7 @@ namespace HomeHunt.Services
                 .AsNoTracking()
                 .OrderByDescending(p => p.CreatedOn)
                 .Take(count)
-                .Select(p => new GetPropertiesResponseData
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    City = p.Location.City,
-                    Neighborhood = p.Location.Neighborhood,
-                    Price = p.Price,
-                    Area = p.Area,
-                    Bedrooms = p.Bedrooms,
-                    Bathrooms = p.Bathrooms,
-                    PropertyType = p.PropertyType,
-                    ListingType = p.ListingType,
-                    Status = p.Status,
-                    ImageUrl = p.ImageUrl,
-                    OwnerUserId = p.Agent.UserId
-                })
+                .Select(PropertyProjections.ListItem)
                 .ToListAsync();
         }
 
@@ -141,27 +114,39 @@ namespace HomeHunt.Services
                 .CountAsync(p => p.Status == PropertyStatus.Available && p.ListingType == ListingType.Rent);
         }
 
-        public async Task CreatePropertyAsync(CreatePropertyRequestData request)
+        public async Task<OperationResponseData> CreatePropertyAsync(SavePropertyRequestData request, CancellationToken cancellationToken = default)
         {
-            Property property = new Property
+            OperationResponseData response = new OperationResponseData();
+
+            if (request.NewImages.Count > MaxImagesPerProperty)
             {
-                Title = request.Title,
-                Description = request.Description,
-                Price = request.Price,
-                Area = request.Area,
-                Bedrooms = request.Bedrooms,
-                Bathrooms = request.Bathrooms,
-                PropertyType = request.PropertyType,
-                ListingType = request.ListingType,
-                Status = request.Status,
-                ImageUrl = request.ImageUrl,
-                LocationId = request.LocationId,
-                AgentId = request.AgentId,
-                CreatedOn = DateTime.Now
-            };
+                response.Errors.Add(TooManyImagesMessage());
+                return response;
+            }
+
+            Property property = new Property { CreatedOn = DateTime.Now };
+            Apply(property, request);
+
+            ImageUploadBatch uploaded = await _images.UploadAsync(request.NewImages, cancellationToken);
+
+            if (uploaded.Error != null)
+            {
+                await _images.DeleteFromStorageAsync(uploaded.Images);
+                response.Errors.Add(uploaded.Error);
+                return response;
+            }
+
+            foreach (PropertyImage image in _images.Arrange(new List<PropertyImage>(), uploaded.Images, request.ImageOrder))
+            {
+                property.Images.Add(image);
+            }
 
             _context.Properties.Add(property);
-            await _context.SaveChangesAsync();
+
+            await SaveOrRollBackUploadsAsync(uploaded.Images, cancellationToken);
+
+            response.Succeeded = true;
+            return response;
         }
 
         public async Task<GetPropertyForEditResponseData?> GetPropertyForEditAsync(int id)
@@ -181,50 +166,85 @@ namespace HomeHunt.Services
                     PropertyType = p.PropertyType,
                     ListingType = p.ListingType,
                     Status = p.Status,
-                    ImageUrl = p.ImageUrl,
                     LocationId = p.LocationId,
-                    AgentId = p.AgentId
+                    AgentId = p.AgentId,
+                    Images = p.Images
+                        .OrderBy(i => i.SortOrder)
+                        .ThenBy(i => i.Id)
+                        .Select(i => new GetPropertyImageResponseData { Id = i.Id, Url = i.Url })
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdatePropertyAsync(int id, UpdatePropertyRequestData request)
+        public async Task<OperationResponseData> UpdatePropertyAsync(int id, UpdatePropertyRequestData request, CancellationToken cancellationToken = default)
         {
-            Property? property = await _context.Properties.FindAsync(id);
+            OperationResponseData response = new OperationResponseData();
+
+            Property? property = await _context.Properties
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
             if (property == null)
             {
-                return false;
+                response.NotFound = true;
+                return response;
             }
 
-            property.Title = request.Title;
-            property.Description = request.Description;
-            property.Price = request.Price;
-            property.Area = request.Area;
-            property.Bedrooms = request.Bedrooms;
-            property.Bathrooms = request.Bathrooms;
-            property.PropertyType = request.PropertyType;
-            property.ListingType = request.ListingType;
-            property.Status = request.Status;
-            property.ImageUrl = request.ImageUrl;
-            property.LocationId = request.LocationId;
-            property.AgentId = request.AgentId;
+            List<PropertyImage> removed = property.Images
+                .Where(image => request.RemoveImageIds.Contains(image.Id))
+                .ToList();
 
-            await _context.SaveChangesAsync();
-            return true;
+            List<PropertyImage> kept = property.Images.Except(removed).ToList();
+
+            if (kept.Count + request.NewImages.Count > MaxImagesPerProperty)
+            {
+                response.Errors.Add(TooManyImagesMessage());
+                return response;
+            }
+
+            ImageUploadBatch uploaded = await _images.UploadAsync(request.NewImages, cancellationToken);
+
+            if (uploaded.Error != null)
+            {
+                await _images.DeleteFromStorageAsync(uploaded.Images);
+                response.Errors.Add(uploaded.Error);
+                return response;
+            }
+
+            Apply(property, request);
+
+            _context.PropertyImages.RemoveRange(removed);
+
+            foreach (PropertyImage image in _images.Arrange(kept, uploaded.Images, request.ImageOrder).Except(kept))
+            {
+                property.Images.Add(image);
+            }
+
+            await SaveOrRollBackUploadsAsync(uploaded.Images, cancellationToken);
+            await _images.DeleteFromStorageAsync(removed);
+
+            response.Succeeded = true;
+            return response;
         }
 
-        public async Task<bool> DeletePropertyAsync(int id)
+        public async Task<bool> DeletePropertyAsync(int id, CancellationToken cancellationToken = default)
         {
-            Property? property = await _context.Properties.FindAsync(id);
+            Property? property = await _context.Properties
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
             if (property == null)
             {
                 return false;
             }
 
+            List<PropertyImage> images = property.Images.ToList();
+
             _context.Properties.Remove(property);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
+            await _images.DeleteFromStorageAsync(images);
+
             return true;
         }
 
@@ -254,7 +274,6 @@ namespace HomeHunt.Services
                     PropertyType = p.PropertyType,
                     ListingType = p.ListingType,
                     Status = p.Status,
-                    ImageUrl = p.ImageUrl,
                     CreatedOn = p.CreatedOn,
                     LocationId = p.LocationId,
                     City = p.Location.City,
@@ -264,9 +283,47 @@ namespace HomeHunt.Services
                     AgentFirstName = p.Agent.FirstName,
                     AgentLastName = p.Agent.LastName,
                     AgentEmail = p.Agent.User.Email!,
-                    AgentPhone = p.Agent.Phone
+                    AgentPhone = p.Agent.Phone,
+                    Images = p.Images
+                        .OrderBy(i => i.SortOrder)
+                        .ThenBy(i => i.Id)
+                        .Select(i => new GetPropertyImageResponseData { Id = i.Id, Url = i.Url })
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        private static void Apply(Property property, SavePropertyRequestData request)
+        {
+            property.Title = request.Title;
+            property.Description = request.Description;
+            property.Price = request.Price;
+            property.Area = request.Area;
+            property.Bedrooms = request.Bedrooms;
+            property.Bathrooms = request.Bathrooms;
+            property.PropertyType = request.PropertyType;
+            property.ListingType = request.ListingType;
+            property.Status = request.Status;
+            property.LocationId = request.LocationId;
+            property.AgentId = request.AgentId;
+        }
+
+        private static string TooManyImagesMessage()
+        {
+            return string.Format(Messages.Property.ImagesTooManyMessage, MaxImagesPerProperty);
+        }
+
+        private async Task SaveOrRollBackUploadsAsync(List<PropertyImage> uploaded, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch
+            {
+                await _images.DeleteFromStorageAsync(uploaded);
+                throw;
+            }
         }
     }
 }

@@ -3,8 +3,48 @@
   object-fit: cover;
 }
 
-.property-details-image {
-  width: 100%;
-  max-height: 400px;
+.image-fit {
   object-fit: cover;
+}
+
+.image-grid > [data-removed="false"] {
+  cursor: grab;
+}
+
+.sortable-ghost {
+  opacity: 0.35;
+}
+
+.sortable-chosen .image-card {
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.25) !important;
+}
+
+.dropzone {
+  align-items: center;
+  border: 2px dashed #adb5bd;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: background-color 0.15s, border-color 0.15s;
+  width: 100%;
+}
+
+.dropzone:hover,
+.dropzone.is-dragover,
+.dropzone:has(+ input:focus-visible) {
+  background-color: #e7f1ff;
+  border-color: #1b6ec2;
+}
+
+.dropzone-title {
+  font-weight: 600;
+}
+
+.dropzone-hint {
+  color: #6c757d;
+  font-size: 0.875rem;
 }

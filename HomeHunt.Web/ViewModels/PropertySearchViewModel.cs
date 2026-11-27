@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using HomeHunt.Common.Enums;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using HomeHunt.Common;
 using static HomeHunt.Common.ValidationConstants.Property;
 using static HomeHunt.Common.Messages.Property;

@@ -23,9 +23,9 @@ namespace HomeHunt.Service.Data.Locations
 
         Task<GetLocationForEditResponseData?> GetLocationForEditAsync(int id);
 
-        Task CreateLocationAsync(CreateLocationRequestData request);
+        Task CreateLocationAsync(SaveLocationRequestData request);
 
-        Task<bool> UpdateLocationAsync(int id, UpdateLocationRequestData request);
+        Task<bool> UpdateLocationAsync(int id, SaveLocationRequestData request);
 
         Task<bool> DeleteLocationAsync(int id);
     }

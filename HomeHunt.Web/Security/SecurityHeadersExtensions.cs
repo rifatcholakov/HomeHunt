@@ -1,4 +1,4 @@
-namespace HomeHunt.Infrastructure
+namespace HomeHunt.Security
 {
     public static class SecurityHeadersExtensions
     {
@@ -6,7 +6,7 @@ namespace HomeHunt.Infrastructure
             "default-src 'self'; " +
             "script-src 'self'; " +
             "style-src 'self' 'unsafe-inline'; " +
-            "img-src 'self' https: data:; " +
+            "img-src 'self' https: data: blob:; " +
             "font-src 'self'; " +
             "connect-src 'self'; " +
             "object-src 'none'; " +

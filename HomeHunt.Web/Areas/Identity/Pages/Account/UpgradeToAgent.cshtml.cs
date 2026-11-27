@@ -1,3 +1,4 @@
+using HomeHunt.Service.Data;
 using System.Security.Claims;
 using HomeHunt.Common;
 using HomeHunt.Controllers;
@@ -71,7 +72,7 @@ namespace HomeHunt.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            CreateAgentResponseData result = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
+            OperationResponseData result = await _agentService.UpgradeToAgentAsync(new UpgradeToAgentRequestData
             {
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
                 FirstName = Input.FirstName,

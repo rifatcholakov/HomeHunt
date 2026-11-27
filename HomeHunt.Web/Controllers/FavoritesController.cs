@@ -1,3 +1,4 @@
+using HomeHunt.Mapping;
 using System.Security.Claims;
 using HomeHunt.Service.Data.Favorites;
 using HomeHunt.Service.Data.Properties.Response;
@@ -22,22 +23,7 @@ namespace HomeHunt.Controllers
             IEnumerable<GetPropertiesResponseData> response = await _favoriteService.GetFavoritePropertiesAsync(GetUserId());
 
             List<PropertyListViewModel> model = response
-                .Select(p => new PropertyListViewModel
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    City = p.City,
-                    Neighborhood = p.Neighborhood,
-                    Price = p.Price,
-                    Area = p.Area,
-                    Bedrooms = p.Bedrooms,
-                    Bathrooms = p.Bathrooms,
-                    PropertyType = p.PropertyType,
-                    ListingType = p.ListingType,
-                    Status = p.Status,
-                    ImageUrl = p.ImageUrl,
-                    OwnerUserId = p.OwnerUserId
-                })
+                .Select(p => p.ToViewModel())
                 .ToList();
 
             return View(model);

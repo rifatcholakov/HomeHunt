@@ -13,4 +13,8 @@
     <ProjectReference Include="..\HomeHunt.Service.Data\HomeHunt.Service.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.29.3" />
+  </ItemGroup>
+
 </Project>

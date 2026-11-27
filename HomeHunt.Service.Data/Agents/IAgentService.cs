@@ -23,10 +23,10 @@ namespace HomeHunt.Service.Data.Agents
 
         Task<GetAgentForEditResponseData?> GetAgentForEditAsync(int id);
 
-        Task<CreateAgentResponseData> CreateAgentAsync(CreateAgentRequestData request);
+        Task<OperationResponseData> CreateAgentAsync(CreateAgentRequestData request);
 
-        Task<CreateAgentResponseData> UpgradeToAgentAsync(UpgradeToAgentRequestData request);
+        Task<OperationResponseData> UpgradeToAgentAsync(UpgradeToAgentRequestData request);
 
-        Task<bool> UpdateAgentAsync(int id, UpdateAgentRequestData request);
+        Task<bool> UpdateAgentAsync(int id, AgentProfileRequestData request);
     }
 }

@@ -1,3 +1,4 @@
+using HomeHunt.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
@@ -52,36 +53,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            AgentDetailsViewModel model = new AgentDetailsViewModel
-            {
-                Id = agent.Id,
-                FirstName = agent.FirstName,
-                LastName = agent.LastName,
-                AgencyName = agent.AgencyName,
-                Email = agent.Email,
-                Phone = agent.Phone,
-                PropertyCount = agent.PropertyCount,
-                ForSaleCount = agent.ForSaleCount,
-                ForRentCount = agent.ForRentCount,
-                Properties = agent.Properties
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
-                    .ToList()
-            };
+            AgentDetailsViewModel model = agent.ToDetailsViewModel();
 
             return View(model);
         }
@@ -133,7 +105,7 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            bool updated = await _agentService.UpdateAgentAsync(id, new UpdateAgentRequestData
+            bool updated = await _agentService.UpdateAgentAsync(id, new AgentProfileRequestData
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -160,36 +132,7 @@ namespace HomeHunt.Controllers
                 return NotFound();
             }
 
-            AgentDetailsViewModel model = new AgentDetailsViewModel
-            {
-                Id = agent.Id,
-                FirstName = agent.FirstName,
-                LastName = agent.LastName,
-                AgencyName = agent.AgencyName,
-                Email = agent.Email,
-                Phone = agent.Phone,
-                PropertyCount = agent.PropertyCount,
-                ForSaleCount = agent.ForSaleCount,
-                ForRentCount = agent.ForRentCount,
-                Properties = agent.Properties
-                    .Select(p => new PropertyListViewModel
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        City = p.City,
-                        Neighborhood = p.Neighborhood,
-                        Price = p.Price,
-                        Area = p.Area,
-                        Bedrooms = p.Bedrooms,
-                        Bathrooms = p.Bathrooms,
-                        PropertyType = p.PropertyType,
-                        ListingType = p.ListingType,
-                        Status = p.Status,
-                        ImageUrl = p.ImageUrl,
-                        OwnerUserId = p.OwnerUserId
-                    })
-                    .ToList()
-            };
+            AgentDetailsViewModel model = agent.ToDetailsViewModel();
 
             return View(model);
         }
@@ -239,7 +182,7 @@ namespace HomeHunt.Controllers
                 return View(model);
             }
 
-            CreateAgentResponseData result = await _agentService.CreateAgentAsync(new CreateAgentRequestData
+            OperationResponseData result = await _agentService.CreateAgentAsync(new CreateAgentRequestData
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,

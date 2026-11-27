@@ -1,3 +1,4 @@
+using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Agents;
 using HomeHunt.Service.Data.Agents.Request;
 using HomeHunt.Service.Data.Agents.Response;
@@ -61,7 +62,7 @@ namespace HomeHunt.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            CreateAgentResponseData result = await _agentService.CreateAgentAsync(new CreateAgentRequestData
+            OperationResponseData result = await _agentService.CreateAgentAsync(new CreateAgentRequestData
             {
                 FirstName = Input.FirstName,
                 LastName = Input.LastName,

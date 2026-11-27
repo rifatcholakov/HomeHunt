@@ -9,8 +9,8 @@ namespace HomeHunt.Service.Data.Users
 
         Task<GetUserResponseData?> GetUserAsync(string id);
 
-        Task<UserOperationResponseData> ChangeRoleAsync(ChangeUserRoleRequestData request);
+        Task<OperationResponseData> ChangeRoleAsync(ChangeUserRoleRequestData request);
 
-        Task<UserOperationResponseData> DeleteUserAsync(string id);
+        Task<OperationResponseData> DeleteUserAsync(string id);
     }
 }

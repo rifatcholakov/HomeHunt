@@ -24,8 +24,6 @@ namespace HomeHunt.ViewModels
 
         public PropertyStatus Status { get; set; }
 
-        public string? ImageUrl { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         public int LocationId { get; set; }
@@ -45,5 +43,7 @@ namespace HomeHunt.ViewModels
         public string AgentEmail { get; set; } = string.Empty;
 
         public string AgentPhone { get; set; } = string.Empty;
+
+        public List<PropertyImageViewModel> Images { get; set; } = new List<PropertyImageViewModel>();
     }
 }

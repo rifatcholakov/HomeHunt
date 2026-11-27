@@ -2,13 +2,13 @@
 
 @{
     string defaultImage = Url.Content("~/images/default-property-image.svg");
-    string imageUrl = string.IsNullOrEmpty(Model.ImageUrl) ? defaultImage : Model.ImageUrl;
+    string imageUrl = string.IsNullOrEmpty(Model.ImageUrl) ? defaultImage : ImageStorage.GetResizedUrl(Model.ImageUrl, 600, 400);
 }
 
 <div class="col">
     <div class="card h-100">
-        <img src="@imageUrl" class="card-img-top property-card-image" alt="@Model.Title"
-             data-fallback-src="@defaultImage" />
+        <img src="@imageUrl" class="card-img-top property-card-image" alt="@Model.Title" width="600" height="400"
+             loading="lazy" data-fallback-src="@defaultImage" />
         <div class="favorite-overlay">
             <vc:favorite-button property-id="@Model.Id" />
         </div>

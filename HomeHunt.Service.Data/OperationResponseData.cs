@@ -1,8 +1,10 @@
-namespace HomeHunt.Service.Data.Agents.Response
+namespace HomeHunt.Service.Data
 {
-    public class CreateAgentResponseData
+    public class OperationResponseData
     {
         public bool Succeeded { get; set; }
+
+        public bool NotFound { get; set; }
 
         public List<string> Errors { get; set; } = new List<string>();
     }

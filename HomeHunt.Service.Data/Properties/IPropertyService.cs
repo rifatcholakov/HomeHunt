@@ -21,10 +21,10 @@ namespace HomeHunt.Service.Data.Properties
 
         Task<string?> GetOwnerUserIdAsync(int propertyId);
 
-        Task CreatePropertyAsync(CreatePropertyRequestData request);
+        Task<OperationResponseData> CreatePropertyAsync(SavePropertyRequestData request, CancellationToken cancellationToken = default);
 
-        Task<bool> UpdatePropertyAsync(int id, UpdatePropertyRequestData request);
+        Task<OperationResponseData> UpdatePropertyAsync(int id, UpdatePropertyRequestData request, CancellationToken cancellationToken = default);
 
-        Task<bool> DeletePropertyAsync(int id);
+        Task<bool> DeletePropertyAsync(int id, CancellationToken cancellationToken = default);
     }
 }

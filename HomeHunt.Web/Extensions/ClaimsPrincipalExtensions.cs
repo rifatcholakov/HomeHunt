@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using HomeHunt.Common;
 
-namespace HomeHunt.Infrastructure
+namespace HomeHunt.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {

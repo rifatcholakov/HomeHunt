@@ -7,17 +7,18 @@ using HomeHunt.Service.Data;
 using HomeHunt.Service.Data.Locations;
 using HomeHunt.Service.Data.Locations.Request;
 using HomeHunt.Service.Data.Locations.Response;
-using HomeHunt.Service.Data.Properties.Response;
 
 namespace HomeHunt.Services
 {
     public class LocationService : ILocationService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPropertyImageManager _images;
 
-        public LocationService(ApplicationDbContext context)
+        public LocationService(ApplicationDbContext context, IPropertyImageManager images)
         {
             _context = context;
+            _images = images;
         }
 
         public async Task<PagedResponseData<GetAllLocationsResponseData>> GetAllLocationsAsync(int page, int pageSize)
@@ -49,23 +50,9 @@ namespace HomeHunt.Services
                     Neighborhood = l.Neighborhood,
                     PostalCode = l.PostalCode,
                     Properties = l.Properties
+                        .AsQueryable()
                         .OrderByDescending(p => p.CreatedOn)
-                        .Select(p => new GetPropertiesResponseData
-                        {
-                            Id = p.Id,
-                            Title = p.Title,
-                            City = l.City,
-                            Neighborhood = l.Neighborhood,
-                            Price = p.Price,
-                            Area = p.Area,
-                            Bedrooms = p.Bedrooms,
-                            Bathrooms = p.Bathrooms,
-                            PropertyType = p.PropertyType,
-                            ListingType = p.ListingType,
-                            Status = p.Status,
-                            ImageUrl = p.ImageUrl,
-                            OwnerUserId = p.Agent.UserId
-                        })
+                        .Select(PropertyProjections.ListItem)
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -161,6 +148,7 @@ namespace HomeHunt.Services
         {
             Location? location = await _context.Locations
                 .Include(l => l.Properties)
+                    .ThenInclude(p => p.Images)
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (location == null)
@@ -168,13 +156,18 @@ namespace HomeHunt.Services
                 return false;
             }
 
+            List<PropertyImage> images = location.Properties.SelectMany(p => p.Images).ToList();
+
             _context.Properties.RemoveRange(location.Properties);
             _context.Locations.Remove(location);
             await _context.SaveChangesAsync();
+
+            await _images.DeleteFromStorageAsync(images);
+
             return true;
         }
 
-        public async Task<bool> UpdateLocationAsync(int id, UpdateLocationRequestData request)
+        public async Task<bool> UpdateLocationAsync(int id, SaveLocationRequestData request)
         {
             Location? location = await _context.Locations.FindAsync(id);
 
@@ -191,7 +184,7 @@ namespace HomeHunt.Services
             return true;
         }
 
-        public async Task CreateLocationAsync(CreateLocationRequestData request)
+        public async Task CreateLocationAsync(SaveLocationRequestData request)
         {
             Location location = new Location
             {
